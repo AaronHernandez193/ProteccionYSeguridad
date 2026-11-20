@@ -1,0 +1,2671 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="narrative">
+  <meta name="design-style" content="briefing">
+  <title>Unidad 6: Protección y Seguridad — Sistemas Operativos</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" >
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@1.43.0/dist/umd/lucide.min.js"></script>
+
+  <style>
+    :root {
+      color-scheme: light;
+
+      /* Page and surfaces: warm stone-white paper (Briefing) */
+      --background: #faf9f5;
+      --surface-container-low: #ffffff;
+      --surface-container: #f1efe8;
+      --surface-container-high: #e6e2d6;
+
+      /* Ink */
+      --on-surface: #17181a;
+      --on-surface-variant: #56585c;
+
+      /* Rules */
+      --outline: #17181a;
+      --outline-variant: #dedad0;
+      --control-border: #c8c4b8;
+
+      /* Accents */
+      --primary: #17181a;
+      --on-primary: #faf9f5;
+      --primary-container: #f2b705;
+      --on-primary-container: #17181a;
+      --secondary: #1f4e5f;
+      --secondary-soft: #e6eff2;
+      --tertiary: #785008;
+      --tag-soft-bg: #f5e6c4;
+      --error: #b42318;
+      --error-bg: #fef2f2;
+      --on-error: #ffffff;
+
+      /* Data series */
+      --data-1: #1f4e5f;
+      --data-2: #d99000;
+      --data-3: #2b6e52;
+      --data-4: #b84a39;
+      --data-context: #c4bfb2;
+
+      /* Semantic */
+      --positive: #1f5c43;
+      --positive-bg: #eaf5f0;
+      --warning: #8a5a00;
+      --warning-bg: #fdf5e2;
+      --focus: #1f4e5f;
+
+      /* Fonts */
+      --font-headline: 'Source Serif 4', serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+      --font-label: 'Geist Mono', monospace;
+
+      /* Shape */
+      --rounded: 0.25rem;
+      --rounded-lg: 0.375rem;
+      --rounded-full: 0.25rem;
+      --badge-radius: 2px;
+
+      /* Style effects */
+      --section-rule: 1.5px solid var(--outline);
+      --card-border: 1px solid var(--outline-variant);
+      --heading-tracking: -0.02em;
+      --label-tracking: 0.08em;
+
+      /* Type scale (Narrative) */
+      --display-size: clamp(2.15rem, 1.35rem + 3.1vw, 3.6rem);
+      --headline-size: clamp(1.6rem, 1.2rem + 1.5vw, 2.3rem);
+      --subhead-size: clamp(1.15rem, 1.05rem + 0.45vw, 1.375rem);
+      --body-size: clamp(1rem, 0.96rem + 0.2vw, 1.09rem);
+      --label-size: clamp(0.75rem, 0.72rem + 0.12vw, 0.8125rem);
+
+      /* Spacing scale */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.5rem;
+      --space-2xl: 4rem;
+      --space-3xl: 5.5rem;
+
+      /* Motion */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-micro: 120ms;
+      --dur-short: 220ms;
+      --dur-long: 420ms;
+    }
+
+    /* Base reset */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      overflow-x: clip;
+      margin: 0;
+      padding: 0;
+      background: var(--background);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-size: var(--body-size);
+      line-height: 1.62;
+      scroll-behavior: smooth;
+    }
+    header { position: static !important; }
+
+    .page-grid {
+      display: grid;
+      gap: var(--space-xl);
+      padding: var(--space-lg);
+      max-width: 1180px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+    .page-grid * { min-width: 0; }
+
+    /* Focus rings */
+    :focus-visible {
+      outline: 2.5px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    /* Typography helpers */
+    h1, h2, h3, h4 {
+      font-family: var(--font-headline);
+      font-weight: 600;
+      letter-spacing: var(--heading-tracking);
+      color: var(--on-surface);
+      margin: 0;
+    }
+    p { margin: 0 0 var(--space-md) 0; max-width: 68ch; }
+    p:last-child { margin-bottom: 0; }
+
+    /* Dossier Bar */
+    .dossier-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      border-bottom: var(--section-rule);
+      padding-bottom: var(--space-sm);
+      margin-bottom: var(--space-md);
+    }
+    .dossier-bar-left {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    .dossier-pill {
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: 0.72rem;
+      letter-spacing: var(--label-tracking);
+      text-transform: uppercase;
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--badge-radius);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+    .dossier-meta {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .title {
+      font-family: var(--font-headline);
+      font-weight: 600;
+      font-size: var(--display-size);
+      letter-spacing: var(--heading-tracking);
+      line-height: 1.08;
+      color: var(--on-surface);
+    }
+    .section-title {
+      font-size: var(--headline-size);
+      line-height: 1.14;
+      margin-bottom: var(--space-xs);
+    }
+    .standfirst {
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: var(--subhead-size);
+      line-height: 1.4;
+      color: var(--secondary);
+      margin-top: var(--space-sm);
+      max-width: 62ch;
+    }
+
+    /* Header & Navigation */
+    .masthead {
+      padding-top: var(--space-md);
+      padding-bottom: var(--space-lg);
+      border-bottom: var(--card-border);
+    }
+    .masthead-top-metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr));
+      gap: var(--space-md);
+      margin-top: var(--space-lg);
+    }
+    .figure-card {
+      background: var(--surface-container-low);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md) var(--space-lg);
+    }
+    .figure-card .label {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      letter-spacing: var(--label-tracking);
+      color: var(--on-surface-variant);
+      display: block;
+      margin-bottom: var(--space-xs);
+    }
+    .figure-card .value {
+      font-family: var(--font-headline);
+      font-weight: 600;
+      font-size: 1.55rem;
+      line-height: 1.15;
+      font-variant-numeric: lining-nums tabular-nums;
+      color: var(--on-surface);
+    }
+    .figure-card .note {
+      font-size: 0.85rem;
+      color: var(--on-surface-variant);
+      margin-top: var(--space-xs);
+    }
+
+    /* Navigation Menu */
+    .topic-nav {
+      background: var(--surface-container-low);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md);
+    }
+    .topic-nav-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-sm);
+    }
+    .progress-track {
+      width: 100%;
+      height: 6px;
+      background: var(--surface-container-high);
+      border-radius: var(--badge-radius);
+      overflow: hidden;
+      margin-bottom: var(--space-md);
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--secondary);
+      transition: width var(--dur-short) var(--ease-out);
+    }
+    .nav-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+      gap: var(--space-sm);
+    }
+    .nav-link {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-sm);
+      padding: var(--space-sm) var(--space-md);
+      background: var(--background);
+      border: var(--card-border);
+      border-radius: var(--rounded);
+      text-decoration: none;
+      color: var(--on-surface);
+      min-height: 44px;
+      transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+    }
+    .nav-link:hover {
+      background: var(--surface-container);
+      border-color: var(--outline);
+    }
+    .nav-link.is-done {
+      border-left: 3px solid var(--positive);
+    }
+    .index-num {
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: var(--label-size);
+      color: var(--secondary);
+      background: var(--surface-container);
+      padding: 0.15rem 0.4rem;
+      border-radius: var(--badge-radius);
+      flex-shrink: 0;
+    }
+    .nav-link-text {
+      font-size: 0.875rem;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    /* Section Structure */
+    .unit-section {
+      padding-top: var(--space-lg);
+      display: grid;
+      gap: var(--space-lg);
+    }
+    .editorial-split {
+      display: grid;
+      grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+      gap: var(--space-lg);
+      align-items: start;
+    }
+    .prose-col {
+      display: grid;
+      gap: var(--space-md);
+    }
+    .aside-box {
+      background: var(--surface-container);
+      border-top: var(--section-rule);
+      padding: var(--space-md) var(--space-lg);
+      border-radius: 0 0 var(--rounded) var(--rounded);
+      display: grid;
+      gap: var(--space-sm);
+    }
+    .aside-box h3 {
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: var(--label-tracking);
+      color: var(--secondary);
+      margin-bottom: var(--space-xs);
+    }
+    .aside-list {
+      margin: 0;
+      padding-left: 1.15rem;
+      display: grid;
+      gap: var(--space-xs);
+      font-size: 0.9375rem;
+    }
+
+    /* Highlight Term & Callout Boxes */
+    .key-term-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+    .term-box {
+      background: var(--surface-container-low);
+      border: var(--card-border);
+      border-left: 3px solid var(--secondary);
+      border-radius: var(--rounded);
+      padding: var(--space-md);
+    }
+    .term-box.gold-accent { border-left-color: var(--primary-container); }
+    .term-box.pine-accent { border-left-color: var(--positive); }
+    .term-box.brick-accent { border-left-color: var(--error); }
+    .term-tag {
+      display: inline-block;
+      font-family: var(--font-label);
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      background: var(--tag-soft-bg);
+      color: var(--tertiary);
+      padding: 0.1rem 0.45rem;
+      border-radius: var(--badge-radius);
+      margin-bottom: var(--space-xs);
+    }
+    .term-box h4 {
+      font-family: var(--font-headline);
+      font-size: 1.15rem;
+      margin-bottom: var(--space-xs);
+    }
+    .term-box p {
+      font-size: 0.925rem;
+      color: var(--on-surface-variant);
+      margin: 0;
+    }
+
+    /* Buttons */
+    .btn {
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 0.875rem;
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--rounded);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      border: 1px solid transparent;
+      transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out), box-shadow var(--dur-micro) var(--ease-out);
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: var(--on-primary);
+    }
+    .btn-primary:hover {
+      background: var(--secondary);
+    }
+    .btn-secondary {
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+      border-color: var(--control-border);
+    }
+    .btn-secondary:hover {
+      background: var(--surface-container);
+      border-color: var(--outline);
+    }
+    .btn-secondary.is-active {
+      background: var(--primary);
+      color: var(--on-primary);
+      border-color: var(--primary);
+    }
+    .btn-done {
+      background: var(--surface-container-low);
+      color: var(--secondary);
+      border: 1px solid var(--secondary);
+      font-family: var(--font-label);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .btn-done.is-completed {
+      background: var(--positive-bg);
+      color: var(--positive);
+      border-color: var(--positive);
+    }
+
+    /* Interactive Lab Panels */
+    .lab-panel {
+      background: var(--surface-container-low);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      display: grid;
+      gap: var(--space-md);
+    }
+    .lab-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      border-bottom: var(--card-border);
+      padding-bottom: var(--space-sm);
+    }
+    .lab-title {
+      font-family: var(--font-headline);
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+    .lab-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      align-items: end;
+    }
+    .field-group {
+      display: grid;
+      gap: var(--space-xs);
+    }
+    .field-group label {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--on-surface-variant);
+      font-weight: 500;
+    }
+    .field-input, .field-select {
+      font-family: var(--font-body);
+      font-size: 0.9375rem;
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-md);
+      background: var(--background);
+      color: var(--on-surface);
+      border: 1px solid var(--control-border);
+      border-radius: var(--rounded);
+    }
+    .field-select {
+      padding-right: 2.25rem;
+    }
+
+    /* Tables */
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      background: var(--surface-container-low);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.92rem;
+    }
+    thead th {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--on-surface);
+      background: var(--surface-container);
+      border-bottom: var(--section-rule);
+      padding: var(--space-sm) var(--space-md);
+    }
+    tbody td {
+      padding: var(--space-sm) var(--space-md);
+      border-bottom: var(--card-border);
+      vertical-align: top;
+    }
+    tbody tr:last-child td { border-bottom: 0; }
+    .mono-cell {
+      font-family: var(--font-label);
+      font-size: 0.85rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Accordions / Expandable Cards */
+    .accordion-list {
+      display: grid;
+      gap: var(--space-sm);
+    }
+    .accordion-item {
+      background: var(--surface-container-low);
+      border: var(--card-border);
+      border-radius: var(--rounded);
+      overflow: hidden;
+    }
+    .accordion-trigger {
+      width: 100%;
+      min-height: 48px;
+      background: transparent;
+      border: 0;
+      padding: var(--space-md);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+      text-align: left;
+      cursor: pointer;
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    .accordion-trigger:hover {
+      background: var(--surface-container);
+    }
+    .accordion-trigger-left {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    .accordion-body {
+      padding: 0 var(--space-md) var(--space-md);
+      border-top: var(--card-border);
+      padding-top: var(--space-md);
+      display: none;
+      color: var(--on-surface);
+      font-size: 0.95rem;
+    }
+    .accordion-item.is-open .accordion-body {
+      display: block;
+    }
+
+    /* Status Callouts */
+    .verdict-banner {
+      padding: var(--space-md);
+      border-radius: var(--rounded);
+      border: var(--card-border);
+      border-left-width: 4px;
+      font-size: 0.9375rem;
+    }
+    .verdict-allow {
+      background: var(--positive-bg);
+      border-color: var(--positive);
+      color: var(--on-surface);
+    }
+    .verdict-deny {
+      background: var(--error-bg);
+      border-color: var(--error);
+      color: var(--on-surface);
+    }
+    .verdict-warn {
+      background: var(--warning-bg);
+      border-color: var(--warning);
+      color: var(--on-surface);
+    }
+
+    /* Matrix Cells */
+    .matrix-perm-btn {
+      font-family: var(--font-label);
+      font-size: 0.78rem;
+      min-height: 36px;
+      padding: 0.25rem 0.5rem;
+      border-radius: var(--badge-radius);
+      border: 1px solid var(--control-border);
+      background: var(--background);
+      color: var(--on-surface-variant);
+      cursor: pointer;
+    }
+    .matrix-perm-btn.is-granted {
+      background: var(--secondary-soft);
+      border-color: var(--secondary);
+      color: var(--secondary);
+      font-weight: 600;
+    }
+
+    /* Protection Rings SVG */
+    .rings-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+      gap: var(--space-lg);
+      align-items: center;
+    }
+    .ring-svg {
+      width: 100%;
+      max-width: 340px;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+    .ring-shape {
+      cursor: pointer;
+      transition: opacity var(--dur-micro) var(--ease-out);
+    }
+    .ring-shape:hover { opacity: 0.85; }
+
+    /* Stack Diagram */
+    .stack-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(130px, 100%), 1fr));
+      gap: var(--space-sm);
+    }
+    .stack-slot {
+      border: var(--card-border);
+      border-radius: var(--rounded);
+      padding: var(--space-sm);
+      background: var(--background);
+      font-family: var(--font-label);
+      font-size: 0.78rem;
+    }
+    .stack-slot.is-corrupted {
+      background: var(--error-bg);
+      border-color: var(--error);
+    }
+    .stack-slot.is-canary {
+      background: var(--warning-bg);
+      border-color: var(--warning);
+    }
+    .stack-slot.is-safe {
+      background: var(--positive-bg);
+      border-color: var(--positive);
+    }
+
+    /* Code Blocks */
+    .code-box {
+      font-family: var(--font-label);
+      font-size: 0.84rem;
+      line-height: 1.5;
+      background: var(--surface-container);
+      border: var(--card-border);
+      border-radius: var(--rounded);
+      padding: var(--space-md);
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    /* Credits Section */
+    .credits-banner {
+      background: var(--surface-container);
+      border-top: var(--section-rule);
+      border-bottom: var(--section-rule);
+      padding: var(--space-lg);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
+      gap: var(--space-lg);
+    }
+    .member-card {
+      background: var(--surface-container-low);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      display: grid;
+      gap: var(--space-md);
+      container-type: inline-size;
+    }
+    .avatar-frame {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+    }
+    .avatar-circle {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: var(--secondary-soft);
+      border: 2px solid var(--secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: 1.4rem;
+      color: var(--secondary);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .avatar-circle.accent-gold {
+      background: var(--tag-soft-bg);
+      border-color: var(--tertiary);
+      color: var(--tertiary);
+    }
+    .avatar-circle.accent-pine {
+      background: var(--positive-bg);
+      border-color: var(--positive);
+      color: var(--positive);
+    }
+    .avatar-circle.accent-ink {
+      background: var(--surface-container-high);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .avatar-circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .photo-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-xs);
+    }
+    .file-input-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+    }
+    .btn-compact {
+      min-height: 36px;
+      padding: 0.25rem 0.6rem;
+      font-size: 0.78rem;
+    }
+
+    /* Footer */
+    .doc-footer {
+      border-top: var(--section-rule);
+      padding-top: var(--space-lg);
+      padding-bottom: var(--space-2xl);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-md);
+      font-size: 0.875rem;
+      color: var(--on-surface-variant);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 860px) {
+      .editorial-split, .rings-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 640px) {
+      .page-grid {
+        padding: var(--space-md);
+        gap: var(--space-lg);
+      }
+      .lab-panel, .member-card {
+        padding: var(--space-md);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+    <div class="page-grid">
+
+        <!-- ENCABEZADO PRINCIPAL -->
+        <header class="masthead" id="inicio">
+            <div class="dossier-bar">
+                <div class="dossier-bar-left">
+                    <span class="dossier-pill">Unidad 06 · Sistemas Operativos</span>
+                    <span class="dossier-meta">Fundamentos académicos · Tanenbaum &amp; Stallings</span>
+                </div>
+                <span class="dossier-meta">7 módulos · Laboratorios interactivos</span>
+            </div>
+
+            <h1 class="title">Protección y Seguridad en Sistemas Operativos</h1>
+            <p class="standfirst">
+                Cómo el núcleo separa la política del mecanismo, confina los dominios de ejecución, resiste la explotación de memoria y garantiza confidencialidad, integridad y disponibilidad mediante criptografía.
+            </p>
+
+            <div class="masthead-top-metrics">
+                <div class="figure-card">
+                    <span class="label">Tríada fundamental</span>
+                    <div class="value">C · I · D</div>
+                    <p class="note">Confidencialidad, Integridad y Disponibilidad como objetivos rectores.</p>
+                </div>
+                <div class="figure-card">
+                    <span class="label">Separación estructural</span>
+                    <div class="value">TCB mínima</div>
+                    <p class="note">Monitor de referencia centralizado: de millones a miles de líneas críticas.</p>
+                </div>
+                <div class="figure-card">
+                    <span class="label">Control de acceso</span>
+                    <div class="value">ACL vs. C-List</div>
+                    <p class="note">Columnas por objeto frente a filas por dominio en la matriz de acceso.</p>
+                </div>
+                <div class="figure-card">
+                    <span class="label">Evaluación formal</span>
+                    <div class="value">DoD D → A1</div>
+                    <p class="note">Desde protección mínima hasta verificación matemática formal y Criterios Comunes.</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- MENÚ DE NAVEGACIÓN INTERACTIVO -->
+        <nav class="topic-nav" aria-label="Navegación de la Unidad 6">
+            <div class="topic-nav-head">
+                <div>
+                    <span class="dossier-meta">Índice interactivo de la unidad</span>
+                    <div id="progress-label" style="font-weight: 600; font-size: 0.95rem;">Progreso de estudio: 0 de 7 temas completados</div>
+                </div>
+                <div style="display: flex; gap: var(--space-sm); flex-wrap: wrap;">
+                    <button type="button" class="btn btn-secondary btn-compact" onclick="toggleAllAccordions(true)">Expandir detalles</button>
+                    <button type="button" class="btn btn-secondary btn-compact" onclick="toggleAllAccordions(false)">Contraer detalles</button>
+                </div>
+            </div>
+            <div class="progress-track" aria-hidden="true">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="nav-grid">
+                <a class="nav-link" href="#sec-6-1" data-nav-sec="6.1">
+                    <span class="index-num">6.1</span>
+                    <span class="nav-link-text">Concepto y objetivos de protección y seguridad</span>
+                </a>
+                <a class="nav-link" href="#sec-6-2" data-nav-sec="6.2">
+                    <span class="index-num">6.2</span>
+                    <span class="nav-link-text">Clasificación aplicada a la seguridad</span>
+                </a>
+                <a class="nav-link" href="#sec-6-3" data-nav-sec="6.3">
+                    <span class="index-num">6.3</span>
+                    <span class="nav-link-text">Funciones del sistema de protección</span>
+                </a>
+                <a class="nav-link" href="#sec-6-4" data-nav-sec="6.4">
+                    <span class="index-num">6.4</span>
+                    <span class="nav-link-text">Implantación de matrices de acceso</span>
+                </a>
+                <a class="nav-link" href="#sec-6-5" data-nav-sec="6.5">
+                    <span class="index-num">6.5</span>
+                    <span class="nav-link-text">Protección basada en el lenguaje</span>
+                </a>
+                <a class="nav-link" href="#sec-6-6" data-nav-sec="6.6">
+                    <span class="index-num">6.6</span>
+                    <span class="nav-link-text">Validación y amenazas al sistema</span>
+                </a>
+                <a class="nav-link" href="#sec-6-7" data-nav-sec="6.7">
+                    <span class="index-num">6.7</span>
+                    <span class="nav-link-text">Cifrado y criptografía aplicada</span>
+                </a>
+                <a class="nav-link" href="#sec-creditos">
+                    <span class="index-num">CR</span>
+                    <span class="nav-link-text">Créditos y equipo de trabajo</span>
+                </a>
+            </div>
+        </nav>
+
+        <!-- ========================================================= -->
+        <!-- SECCIÓN 6.1 -->
+        <!-- ========================================================= -->
+        <section class="unit-section" id="sec-6-1">
+            <div class="dossier-bar">
+                <div class="dossier-bar-left">
+                    <span class="dossier-pill">Sección 6.1</span>
+                    <span class="dossier-meta">Fundamentos conceptuales y diseño seguro</span>
+                </div>
+                <button type="button" class="btn btn-done" data-complete-btn="6.1" onclick="toggleSectionComplete('6.1')">
+                    <i data-lucide="check-circle-2" style="width:16px;height:16px;" aria-hidden="true"></i>
+                    <span>Marcar como estudiado</span>
+                </button>
+            </div>
+
+            <div>
+                <h2 class="section-title">La seguridad define el problema global; la protección aporta los mecanismos internos del sistema</h2>
+                <p class="standfirst">Distinguir el entorno normativo de los controles internos del kernel evita diseñar sistemas formalmente correctos pero vulnerables en la práctica.</p>
+            </div>
+
+            <div class="editorial-split">
+                <div class="prose-col">
+                    <p>
+                        En la literatura clásica de sistemas operativos, autores como Andrew S. Tanenbaum y William Stallings establecen una frontera precisa entre dos términos que a menudo se usan como sinónimos. La <strong>seguridad</strong> abarca el problema general de salvaguardar un sistema computacional e incluye dimensiones técnicas, administrativas, físicas, legales y políticas (desde el control de acceso a edificios y las normativas laborales hasta la defensa frente a intrusos externos en red).
+                    </p>
+                    <p>
+                        Por su parte, la <strong>protección</strong> se refiere de manera estricta a los <em>mecanismos internos del sistema operativo</em> (apoyados por el hardware) que controlan el acceso de los programas, procesos o usuarios a los recursos definidos por el sistema: memoria, CPU, archivos, semáforos y dispositivos de E/S. Un sistema operativo puede ofrecer mecanismos de protección robustos y, aun así, sufrir una brecha de seguridad si las políticas administrativas son deficientes o un usuario comparte su contraseña.
+                    </p>
+                    <p>
+                        Como señala Tanenbaum, el enemigo más silencioso de la confiabilidad es la complejidad desmedida: <em>«las características son enemigas de la seguridad»</em>. Cuando un núcleo crece a millones de líneas de código para soportar formatos activos y funciones accesorias, se multiplican los errores explotables. La única vía probada para construir sistemas confiables consiste en mantener un núcleo de seguridad simple, verificable y coherente con los principios clásicos de diseño.
+                    </p>
+                </div>
+
+                <aside class="aside-box">
+                    <h3>Distinción clave</h3>
+                    <ul class="aside-list">
+                        <li><strong>Seguridad (entorno general):</strong> políticas organizacionales, marco legal, ingeniería social, contraseñas, seguridad física y defensa perimetral.</li>
+                        <li><strong>Protección (sistema operativo):</strong> bits de modo kernel/usuario, tablas de páginas, dominios, monitores de referencia y listas de permisos.</li>
+                        <li><strong>Regla de diseño:</strong> la seguridad del sistema es tan fuerte como su eslabón más débil (principio de defensa en profundidad).</li>
+                    </ul>
+                </aside>
+            </div>
+
+            <!-- Objetivos fundamentales -->
+            <div class="key-term-grid">
+                <article class="term-box">
+                    <span class="term-tag">Objetivo 01</span>
+                    <h4>Confidencialidad</h4>
+                    <p>Garantizar que la información secreta o sensible sólo sea leída por sujetos debidamente autorizados. Su amenaza directa es la <strong>exposición o divulgación no autorizada</strong> de datos.</p>
+                </article>
+                <article class="term-box gold-accent">
+                    <span class="term-tag">Objetivo 02</span>
+                    <h4>Integridad</h4>
+                    <p>Asegurar que los datos y programas no sean alterados, eliminados ni falsificados sin autorización explícita. Su amenaza principal es la <strong>alteración maliciosa o accidental</strong>.</p>
+                </article>
+                <article class="term-box pine-accent">
+                    <span class="term-tag">Objetivo 03</span>
+                    <h4>Disponibilidad</h4>
+                    <p>Mantener el sistema y sus recursos accesibles y operativos para los usuarios legítimos en el momento requerido. Se ve comprometida por ataques de <strong>negación de servicio (DoS)</strong>.</p>
+                </article>
+                <article class="term-box brick-accent">
+                    <span class="term-tag">Objetivo 04</span>
+                    <h4>Privacidad y exclusión</h4>
+                    <p>Proteger la esfera personal del usuario frente a recopilación clandestina y excluir actores externos que buscan apropiarse del equipo (por ejemplo, convertirlo en un nodo <em>zombie</em>).</p>
+                </article>
+            </div>
+
+            <!-- Laboratorio interactivo 6.1: Principios de diseño seguro -->
+            <div class="lab-panel">
+                <div class="lab-header">
+                    <div>
+                        <span class="dossier-meta">Explorador conceptual · Saltzer &amp; Schroeder</span>
+                        <h3 class="lab-title">Principios fundamentales de diseño seguro</h3>
+                    </div>
+                    <span class="dossier-meta">Selecciona un principio para inspeccionar su aplicación</span>
+                </div>
+                <div class="lab-controls" id="principles-tabs">
+                    <button type="button" class="btn btn-secondary is-active" onclick="selectPrinciple(0)">Economía de mecanismos</button>
+                    <button type="button" class="btn btn-secondary" onclick="selectPrinciple(1)">Valores por defecto seguros</button>
+                    <button type="button" class="btn btn-secondary" onclick="selectPrinciple(2)">Mediación completa</button>
+                    <button type="button" class="btn btn-secondary" onclick="selectPrinciple(3)">Diseño abierto</button>
+                    <button type="button" class="btn btn-secondary" onclick="selectPrinciple(4)">Separación de privilegios</button>
+                    <button type="button" class="btn btn-secondary" onclick="selectPrinciple(5)">Mínimo privilegio</button>
+                    <button type="button" class="btn btn-secondary" onclick="selectPrinciple(6)">Mínimo mecanismo común</button>
+                    <button type="button" class="btn btn-secondary" onclick="selectPrinciple(7)">Aceptabilidad psicológica</button>
+                </div>
+                <div id="principle-detail" class="figure-card" style="background: var(--background);"></div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- SECCIÓN 6.2 -->
+        <!-- ========================================================= -->
+        <section class="unit-section" id="sec-6-2">
+            <div class="dossier-bar">
+                <div class="dossier-bar-left">
+                    <span class="dossier-pill">Sección 6.2</span>
+                    <span class="dossier-meta">Taxonomía de amenazas, intrusos y estándares formales</span>
+                </div>
+                <button type="button" class="btn btn-done" data-complete-btn="6.2" onclick="toggleSectionComplete('6.2')">
+                    <i data-lucide="check-circle-2" style="width:16px;height:16px;" aria-hidden="true"></i>
+                    <span>Marcar como estudiado</span>
+                </button>
+            </div>
+
+            <div>
+                <h2 class="section-title">De los intrusos pasivos al Libro Naranja y los Criterios Comunes</h2>
+                <p class="standfirst">Clasificar quién ataca, qué amenaza persigue y qué grado de aseguramiento formal ofrece el sistema operativo permite gestionar el riesgo con rigor.</p>
+            </div>
+
+            <div class="editorial-split">
+                <div class="prose-col">
+                    <p>
+                        Todo análisis de riesgo comienza identificando las <strong>amenazas</strong> (exposición, alteración, interrupción/negación de servicio y secuestro de recursos) y los perfiles de <strong>intrusos o adversarios</strong>. Los <em>intrusos pasivos</em> se limitan a leer información sin autorización (espionaje o intercepción de tráfico), mientras que los <em>intrusos activos</em> resultan más dañinos porque alteran archivos, suplantan identidades o inyectan código malicioso.
+                    </p>
+                    <p>
+                        Tanenbaum distingue entre los <em>hackers</em> (término técnico tradicional para programadores sumamente hábiles) y los <em>crackers</em> (atacantes que irrumpen en sistemas ajenos). Entre las motivaciones frecuentes se encuentran el husmeo casual por reto técnico, el lucro ilícito (fraudes financieros o robo de identidad), el espionaje corporativo o militar y el vandalismo destructivo.
+                    </p>
+                    <p>
+                        La <strong>gestión de riesgos</strong> evalúa sistemáticamente el valor de los activos, la probabilidad de ocurrencia de cada amenaza y el impacto potencial, equilibrando el costo de las salvaguardas frente a la pérdida esperada. Para certificar objetivamente la solidez de un sistema operativo surgieron estándares internacionales: el <strong>Libro Naranja del Departamento de Defensa de EE. UU. (TCSEC, DoD 5200.28-STD)</strong> y su sucesor internacional, los <strong>Criterios Comunes (ISO/IEC 15408)</strong> con sus siete niveles de garantía (EAL1 a EAL7).
+                    </p>
+                </div>
+
+                <aside class="aside-box">
+                    <h3>Ciclo de gestión de riesgos</h3>
+                    <ul class="aside-list">
+                        <li><strong>1. Inventario de activos:</strong> hardware, datos confidenciales, credenciales y disponibilidad del servicio.</li>
+                        <li><strong>2. Análisis de vulnerabilidades:</strong> errores de software, configuraciones abiertas o canales encubiertos.</li>
+                        <li><strong>3. Contramedidas proporcionales:</strong> nunca gastar más en proteger un activo que su valor real o impacto de pérdida.</li>
+                        <li><strong>4. Defensa en profundidad:</strong> capas independientes (firewall, kernel endurecido, cifrado, auditoría).</li>
+                    </ul>
+                </aside>
+            </div>
+
+            <!-- Tabla de amenazas e intrusos -->
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Categoría / Perfil</th>
+                            <th>Naturaleza</th>
+                            <th>Objetivo vulnerado</th>
+                            <th>Ejemplo típico en Sistemas Operativos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Intruso pasivo</strong></td>
+                            <td>Lectura / observación clandestina</td>
+                            <td>Confidencialidad</td>
+                            <td>Lectura de archivos mal protegidos, rastreo de paquetes sin cifrar o espionaje industrial.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Intruso activo</strong></td>
+                            <td>Modificación o inyección</td>
+                            <td>Integridad y Disponibilidad</td>
+                            <td>Alteración de registros contables, borrado de bitácoras o suplantación en el inicio de sesión.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cracker / atacante externo</strong></td>
+                            <td>Explotación automatizada por red</td>
+                            <td>Confidencialidad / Control</td>
+                            <td>Escaneo masivo de puertos, ataques de diccionario por fuerza bruta o explotación remota.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Amenaza interna (Insider)</strong></td>
+                            <td>Personal con privilegios legítimos</td>
+                            <td>Integridad / Confidencialidad</td>
+                            <td>Inserción de bombas lógicas en nóminas, puertas traseras en drivers o desvío financiero.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Malware / Botnet zombie</strong></td>
+                            <td>Código autónomo autorreplicante</td>
+                            <td>Exclusión y Disponibilidad</td>
+                            <td>Toma de control doméstico para envío masivo de spam o denegación de servicio distribuida (DDoS).</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Laboratorio interactivo 6.2: Niveles del Libro Naranja -->
+            <div class="lab-panel">
+                <div class="lab-header">
+                    <div>
+                        <span class="dossier-meta">Estándar TCSEC (DoD 5200.28-STD) &amp; Common Criteria</span>
+                        <h3 class="lab-title">Inspector de Niveles de Seguridad (D a A1)</h3>
+                    </div>
+                    <span class="dossier-meta">Haz clic en un nivel para examinar sus requisitos obligatorios</span>
+                </div>
+
+                <div class="lab-controls" id="tcsec-buttons">
+                    <button type="button" class="btn btn-secondary" onclick="selectTcsec('D')">Nivel D</button>
+                    <button type="button" class="btn btn-secondary" onclick="selectTcsec('C1')">Nivel C1</button>
+                    <button type="button" class="btn btn-secondary is-active" onclick="selectTcsec('C2')">Nivel C2</button>
+                    <button type="button" class="btn btn-secondary" onclick="selectTcsec('B1')">Nivel B1</button>
+                    <button type="button" class="btn btn-secondary" onclick="selectTcsec('B2')">Nivel B2</button>
+                    <button type="button" class="btn btn-secondary" onclick="selectTcsec('B3')">Nivel B3</button>
+                    <button type="button" class="btn btn-secondary" onclick="selectTcsec('A1')">Nivel A1</button>
+                </div>
+
+                <div id="tcsec-output" class="figure-card" style="background: var(--background);"></div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- SECCIÓN 6.3 -->
+        <!-- ========================================================= -->
+        <section class="unit-section" id="sec-6-3">
+            <div class="dossier-bar">
+                <div class="dossier-bar-left">
+                    <span class="dossier-pill">Sección 6.3</span>
+                    <span class="dossier-meta">Arquitectura de protección, TCB y control de acceso</span>
+                </div>
+                <button type="button" class="btn btn-done" data-complete-btn="6.3" onclick="toggleSectionComplete('6.3')">
+                    <i data-lucide="check-circle-2" style="width:16px;height:16px;" aria-hidden="true"></i>
+                    <span>Marcar como estudiado</span>
+                </button>
+            </div>
+
+            <div>
+                <h2 class="section-title">Dominios, Monitor de Referencia y modelos formales DAC vs. MAC</h2>
+                <p class="standfirst">El sistema operativo separa la política de los mecanismos y concentra toda decisión crítica en una Base de Cómputo Confiable minimalista.</p>
+            </div>
+
+            <div class="editorial-split">
+                <div class="prose-col">
+                    <p>
+                        Un principio arquitectónico cardinal de los sistemas operativos es separar la <strong>política</strong> (<em>qué</em> debe permitirse según reglas administrativas o del propietario) del <strong>mecanismo</strong> (<em>cómo</em> el núcleo hace cumplir esas decisiones). Para modelar la protección, el sistema define <strong>objetos</strong> (hardware como CPU, impresoras o memoria; software como procesos, archivos o semáforos) y agrupa los permisos en <strong>dominios de protección</strong>. Un dominio es un conjunto de pares <code>(objeto, permisos)</code>. En UNIX y Linux, el dominio de un proceso se define mediante su pareja <code>(UID, GID)</code> y puede transicionar de dominio al ejecutar un binario con el bit <code>SETUID</code>.
+                    </p>
+                    <p>
+                        Todo dominio debe regirse por el <strong>Principio de Menor Autoridad (POLA)</strong>: cada proceso y usuario recibe estrictamente el conjunto mínimo de objetos y privilegios indispensables para desempeñar su tarea. Al mismo tiempo, la separación hardware entre <em>modo usuario</em> y <em>modo kernel</em> aísla los espacios de direcciones de los procesos entre sí y respecto al núcleo.
+                    </p>
+                    <p>
+                        Para que estas garantías no sean eludibles, el sistema concentra su seguridad en la <strong>Base de Cómputo Confiable (TCB)</strong>: el conjunto mínimo de hardware, kernel y programas privilegiados que debe operar sin fallos para sostener toda la política. Dentro de la TCB reside el <strong>Monitor de Referencia</strong>, un módulo único e ineludible por el cual pasan todas las llamadas al sistema sensibles (como abrir un archivo) para validar permisos antes de conceder acceso. Diseños microkernel como <em>MINIX 3</em> reducen la parte en modo kernel a unas ~4,000 líneas, aislando drivers como procesos de usuario fuera de la TCB crítica.
+                    </p>
+                </div>
+
+                <aside class="aside-box">
+                    <h3>DAC frente a MAC</h3>
+                    <ul class="aside-list">
+                        <li><strong>DAC (Control de Acceso Discrecional):</strong> el propietario de cada archivo decide quién puede leerlo o escribirlo (ej. permisos POSIX o ACLs estándar). Vulnerable a troyanos que copien archivos en nombre del usuario.</li>
+                        <li><strong>MAC (Control de Acceso Obligatorio):</strong> la organización impone etiquetas jerárquicas de seguridad que ni siquiera el propietario puede relajar, regulando el flujo de información entre niveles.</li>
+                        <li><strong>Canales encubiertos (Lampson):</strong> incluso un modelo MAC matemáticamente probado puede sufrir fugas si un proceso encapsulado modula el uso de CPU, bloqueos de archivos o el tamaño de archivos para transmitir bits en secreto.</li>
+                    </ul>
+                </aside>
+            </div>
+
+            <!-- Comparativa Bell-LaPadula vs Biba -->
+            <div class="key-term-grid">
+                <article class="term-box">
+                    <span class="term-tag">MAC · Confidencialidad</span>
+                    <h4>Modelo Bell-LaPadula</h4>
+                    <p>
+                        Diseñado para proteger secretos militares. Impide fugas de niveles altos hacia niveles bajos mediante dos reglas: <strong>Seguridad simple (no leer hacia arriba)</strong>: un sujeto de nivel <em>k</em> sólo lee objetos de nivel ≤ <em>k</em>; y <strong>Propiedad * (no escribir hacia abajo)</strong>: sólo escribe en objetos de nivel ≥ <em>k</em>.
+                    </p>
+                </article>
+                <article class="term-box gold-accent">
+                    <span class="term-tag">MAC · Integridad</span>
+                    <h4>Modelo Biba</h4>
+                    <p>
+                        Diseñado para preservar la integridad de los datos en entornos civiles o corporativos mediante reglas inversas: <strong>Integridad simple (no escribir hacia arriba)</strong>: un sujeto de nivel <em>k</em> sólo escribe en nivel ≤ <em>k</em>; y <strong>Propiedad * de integridad (no leer hacia abajo)</strong>: sólo lee de nivel ≥ <em>k</em>, evitando contaminarse con datos menos confiables.
+                    </p>
+                </article>
+            </div>
+
+            <!-- Simulador interactivo 6.3: Monitor de Referencia (Bell-LaPadula vs Biba) -->
+            <div class="lab-panel">
+                <div class="lab-header">
+                    <div>
+                        <span class="dossier-meta">Laboratorio interactivo · Flujo de información</span>
+                        <h3 class="lab-title">Simulador del Monitor de Referencia (DAC / Bell-LaPadula / Biba)</h3>
+                    </div>
+                    <span class="dossier-meta">Prueba si el kernel autoriza o bloquea la operación</span>
+                </div>
+
+                <div class="lab-controls">
+                    <div class="field-group">
+                        <label for="mac-model">Modelo de seguridad</label>
+                        <select id="mac-model" class="field-select" onchange="evaluateMacFlow()">
+                            <option value="blp">Bell-LaPadula (Confidencialidad)</option>
+                            <option value="biba">Biba (Integridad)</option>
+                            <option value="dac">DAC (Permiso del propietario)</option>
+                        </select>
+                    </div>
+                    <div class="field-group">
+                        <label for="mac-subject">Nivel del Sujeto (Proceso)</label>
+                        <select id="mac-subject" class="field-select" onchange="evaluateMacFlow()">
+                            <option value="1">Nivel 1 — No clasificado / Básico</option>
+                            <option value="2">Nivel 2 — Confidencial / Operador</option>
+                            <option value="3" selected>Nivel 3 — Secreto / Gerencia</option>
+                            <option value="4">Nivel 4 — Alta Confidencialidad / Dirección</option>
+                        </select>
+                    </div>
+                    <div class="field-group">
+                        <label for="mac-op">Operación solicitada</label>
+                        <select id="mac-op" class="field-select" onchange="evaluateMacFlow()">
+                            <option value="read">READ (Leer objeto → flujo hacia el sujeto)</option>
+                            <option value="write">WRITE (Escribir objeto → flujo desde el sujeto)</option>
+                        </select>
+                    </div>
+                    <div class="field-group">
+                        <label for="mac-object">Nivel del Objeto (Archivo)</label>
+                        <select id="mac-object" class="field-select" onchange="evaluateMacFlow()">
+                            <option value="1">Nivel 1 — No clasificado / Básico</option>
+                            <option value="2">Nivel 2 — Confidencial / Operador</option>
+                            <option value="3">Nivel 3 — Secreto / Gerencia</option>
+                            <option value="4" selected>Nivel 4 — Alta Confidencialidad / Dirección</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="mac-result" class="verdict-banner verdict-deny"></div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- SECCIÓN 6.4 -->
+        <!-- ========================================================= -->
+        <section class="unit-section" id="sec-6-4">
+            <div class="dossier-bar">
+                <div class="dossier-bar-left">
+                    <span class="dossier-pill">Sección 6.4</span>
+                    <span class="dossier-meta">Estructuras de datos de control de acceso</span>
+                </div>
+                <button type="button" class="btn btn-done" data-complete-btn="6.4" onclick="toggleSectionComplete('6.4')">
+                    <i data-lucide="check-circle-2" style="width:16px;height:16px;" aria-hidden="true"></i>
+                    <span>Marcar como estudiado</span>
+                </button>
+            </div>
+
+            <div>
+                <h2 class="section-title">Matrices de protección y su descomposición en ACLs y Listas de Capacidades</h2>
+                <p class="standfirst">Almacenar una matriz completa en disco resulta inviable por su dispersión; los sistemas reales la particionan por columnas o por filas.</p>
+            </div>
+
+            <div class="editorial-split">
+                <div class="prose-col">
+                    <p>
+                        Conceptualmente, el estado de protección de un sistema se representa mediante una <strong>Matriz de Acceso</strong>: cada fila corresponde a un dominio (o sujeto) y cada columna a un objeto (archivos, dispositivos o incluso otros dominios con el permiso especial <code>Enter</code> para modelar cambios de privilegio como <code>SETUID</code>). Cada celda lista los derechos otorgados: lectura (<code>R</code>), escritura (<code>W</code>), ejecución (<code>X</code>) o propiedad. Harrison, Ruzzo y Ullman formalizaron su evolución dinámica mediante seis primitivas: crear/eliminar objeto, crear/eliminar dominio e insertar/eliminar derecho.
+                    </p>
+                    <p>
+                        En un sistema con miles de usuarios y millones de archivos, casi todas las celdas de la matriz están vacías; guardarla íntegra desperdiciaría almacenamiento y memoria. Por ello, se implementan dos técnicas prácticas excluyentes que almacenan únicamente los elementos no vacíos:
+                    </p>
+                    <p>
+                        <strong>1. Listas de Control de Acceso (ACL):</strong> almacenan la matriz <em>por columnas</em>. Cada objeto mantiene una lista ordenada de dominios (usuarios o grupos) y los permisos que poseen sobre él. Es el enfoque usado en NTFS/Windows (DACLs con entradas Permitir/Denegar y SACLs para auditoría) y en sistemas POSIX extendidos.
+                    </p>
+                    <p>
+                        <strong>2. Listas de Capacidades (C-Lists):</strong> almacenan la matriz <em>por filas</em>. Cada proceso o dominio porta una lista de boletos criptográficos o protegidos llamados <em>capacidades</em>, donde cada entrada especifica un objeto y los permisos autorizados. Para evitar falsificaciones en sistemas distribuidos como <em>Amoeba</em>, el servidor protege cada capacidad mediante una función hash unidireccional <code>f(Objeto, Permisos, Campo_Comprobación)</code>.
+                    </p>
+                </div>
+
+                <aside class="aside-box">
+                    <h3>Regla mnemotécnica</h3>
+                    <ul class="aside-list">
+                        <li><strong>ACL = Columna (¿Quién entra aquí?):</strong> el guardia en la puerta del objeto revisa la lista de invitados autorizados.</li>
+                        <li><strong>C-List = Fila (¿Qué llaves tengo?):</strong> el sujeto lleva un llavero de boletos infalsificables que le abren puertas específicas sin consultar listas centrales por usuario.</li>
+                    </ul>
+                </aside>
+            </div>
+
+            <!-- Laboratorio interactivo 6.4: Matriz <-> ACL <-> C-List -->
+            <div class="lab-panel">
+                <div class="lab-header">
+                    <div>
+                        <span class="dossier-meta">Laboratorio interactivo · Descomposición matricial</span>
+                        <h3 class="lab-title">Matriz de Protección viva: ACL (Columnas) y C-List (Filas)</h3>
+                    </div>
+                    <span class="dossier-meta">Haz clic en cualquier celda para otorgar o revocar permisos</span>
+                </div>
+
+                <div class="table-wrap">
+                    <table id="matrix-table">
+                        <thead>
+                            <tr>
+                                <th>Dominio \ Objeto</th>
+                                <th>Archivo1 (Informe)</th>
+                                <th>Archivo2 (Nómina)</th>
+                                <th>Impresora1</th>
+                                <th>Dominio 2 (Enter)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="matrix-tbody"></tbody>
+                    </table>
+                </div>
+
+                <div class="editorial-split" style="grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);">
+                    <div class="figure-card" style="background: var(--background);">
+                        <div class="field-group" style="margin-bottom: var(--space-sm);">
+                            <label for="acl-object-select">Vista por Columna — ACL del objeto</label>
+                            <select id="acl-object-select" class="field-select" onchange="renderMatrixViews()">
+                                <option value="0">Archivo1 (Informe)</option>
+                                <option value="1">Archivo2 (Nómina)</option>
+                                <option value="2">Impresora1</option>
+                                <option value="3">Dominio 2 (Cambio de dominio)</option>
+                            </select>
+                        </div>
+                        <div id="acl-view-box" class="code-box"></div>
+                    </div>
+
+                    <div class="figure-card" style="background: var(--background);">
+                        <div class="field-group" style="margin-bottom: var(--space-sm);">
+                            <label for="clist-domain-select">Vista por Fila — C-List del dominio</label>
+                            <select id="clist-domain-select" class="field-select" onchange="renderMatrixViews()">
+                                <option value="0">Dominio 1 (Usuario Ana)</option>
+                                <option value="1">Dominio 2 (Proceso Contable)</option>
+                                <option value="2">Dominio 3 (Invitado)</option>
+                            </select>
+                        </div>
+                        <div id="clist-view-box" class="code-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cuadro comparativo detallado -->
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Criterio técnico</th>
+                            <th>Listas de Control de Acceso (ACL)</th>
+                            <th>Listas de Capacidades (C-Lists)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Orientación en la matriz</strong></td>
+                            <td>Por columnas (indexadas por objeto).</td>
+                            <td>Por filas (asociadas a cada proceso o dominio).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Revocación de permisos</strong></td>
+                            <td><strong>Inmediata y sencilla:</strong> basta editar la ACL del objeto para quitar un usuario o grupo.</td>
+                            <td><strong>Compleja:</strong> los boletos circulan entre procesos; exige invalidar versiones, listas negras o claves de comprobación.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Auditoría («¿Quién accede a X?»)</strong></td>
+                            <td><strong>Directa:</strong> se inspecciona únicamente la ACL adjunta al objeto X.</td>
+                            <td><strong>Costosa:</strong> obliga a rastrear las listas de capacidades de todos los dominios del sistema.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Complejidad de búsqueda en ejecución</strong></td>
+                            <td>Puede ser mayor si la ACL tiene decenas de ACEs de usuarios y grupos que deben evaluarse secuencialmente.</td>
+                            <td><strong>Muy rápida (O(1)):</strong> el proceso presenta directamente su capacidad y el kernel/servidor verifica su autenticidad.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Delegación y principio POLA</strong></td>
+                            <td>Requiere privilegios administrativos o cambio de propietario; menos granular por subproceso.</td>
+                            <td><strong>Natural y granular:</strong> un proceso puede ceder una capacidad atenuada (ej. sólo lectura) a un subproceso o servidor.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Riesgo y seguridad</strong></td>
+                            <td>Sufre el problema del «diputado confundido» si un servidor abusa de su identidad frente a múltiples clientes.</td>
+                            <td>Debe impedirse su falsificación (almacenamiento en espacio kernel, memoria etiquetada o firmas criptográficas).</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- SECCIÓN 6.5 -->
+        <!-- ========================================================= -->
+        <section class="unit-section" id="sec-6-5">
+            <div class="dossier-bar">
+                <div class="dossier-bar-left">
+                    <span class="dossier-pill">Sección 6.5</span>
+                    <span class="dossier-meta">Anillos de protección, máquinas virtuales y seguridad de tipos</span>
+                </div>
+                <button type="button" class="btn btn-done" data-complete-btn="6.5" onclick="toggleSectionComplete('6.5')">
+                    <i data-lucide="check-circle-2" style="width:16px;height:16px;" aria-hidden="true"></i>
+                    <span>Marcar como estudiado</span>
+                </button>
+            </div>
+
+            <div>
+                <h2 class="section-title">Cuando el lenguaje y la máquina virtual refuerzan las fronteras del hardware</h2>
+                <p class="standfirst">El aislamiento clásico por proceso resulta insuficiente para confinar módulos dentro de una misma aplicación; aquí entran los anillos, los verificadores de bytecode y las cajas de arena.</p>
+            </div>
+
+            <div class="editorial-split">
+                <div class="prose-col">
+                    <p>
+                        Aunque el aislamiento tradicional separa procesos mediante espacios de direcciones virtuales, muchas aplicaciones modernas descargan e interpretan código externo dentro del mismo proceso (por ejemplo, complementos o <em>applets</em>). Para resolver este reto colaboran tres capas: la arquitectura de <strong>anillos de protección</strong>, el <strong>confinamiento por sistema operativo</strong> y la <strong>seguridad provista por el lenguaje</strong>.
+                    </p>
+                    <p>
+                        Introducidos por <em>MULTICS</em> y adoptados en el hardware <em>Intel x86</em>, los <strong>anillos de protección</strong> organizan los niveles de privilegio en círculos concéntricos del 0 (máximo privilegio, kernel) al 3 (aplicaciones de usuario). Un programa puede acceder a datos de su nivel o de niveles menos privilegiados, pero cualquier salto arbitrario hacia un anillo interno dispara un fallo de hardware. Las llamadas válidas hacia niveles internos sólo se realizan a través de puntos de entrada oficiales denominados <strong>compuertas de llamada (<em>call gates</em>)</strong>.
+                    </p>
+                    <p>
+                        En el plano del lenguaje, la <strong>seguridad de tipos</strong> marca una brecha abismal. En lenguajes como <strong>C y C++</strong>, el uso libre de punteros sin comprobación de límites en arreglos y la gestión manual de memoria propician desbordamientos y fugas explotables. En contraste, lenguajes administrados como <strong>Java</strong> o <strong>C#</strong> (y lenguajes con verificación de propiedad como Rust) eliminan la aritmética arbitraria de punteros, comprueban límites en tiempo de ejecución, utilizan recolección de basura y ejecutan código intermedio verificado.
+                    </p>
+                </div>
+
+                <aside class="aside-box">
+                    <h3>Encarcelamiento y Sandboxing</h3>
+                    <ul class="aside-list">
+                        <li><strong>Caja de Arena (Sandboxing):</strong> divide la memoria del módulo en una caja de código y una caja de datos separadas (evitando código automodificable) y reemplaza llamadas directas al sistema por consultas a un monitor de referencias.</li>
+                        <li><strong>Encarcelamiento (Jailing / chroot):</strong> confina un proceso dentro de un subdirectorio raíz ficticio en UNIX/Linux para que no pueda ver ni alcanzar archivos fuera de su «jaula».</li>
+                        <li><strong>JVM Bytecode Verifier:</strong> antes de ejecutar un <code>.class</code>, valida tipos en la pila, ausencia de desbordamientos de pila y saltos legales, aplicando luego políticas del cargador de clases por origen (URL) y firmante criptográfico.</li>
+                    </ul>
+                </aside>
+            </div>
+
+            <!-- Diagrama interactivo 6.5: Anillos de protección -->
+            <div class="lab-panel">
+                <div class="lab-header">
+                    <div>
+                        <span class="dossier-meta">Esquema interactivo · Arquitectura MULTICS / x86</span>
+                        <h3 class="lab-title">Anillos de Protección y Mecanismos Basados en el Lenguaje</h3>
+                    </div>
+                    <span class="dossier-meta">Haz clic en un anillo o botón para inspeccionar su función</span>
+                </div>
+
+                <div class="rings-layout">
+                    <div>
+                        <svg class="ring-svg" viewBox="0 0 320 320" role="img" aria-label="Diagrama concéntrico de los 4 anillos de protección del 0 al 3">
+                            <circle class="ring-shape" cx="160" cy="160" r="145" fill="var(--surface-container)" stroke="var(--outline-variant)" stroke-width="2" onclick="selectRing(3)"></circle>
+                            <circle class="ring-shape" cx="160" cy="160" r="110" fill="var(--secondary-soft)" stroke="var(--secondary)" stroke-width="1.5" onclick="selectRing(2)"></circle>
+                            <circle class="ring-shape" cx="160" cy="160" r="76" fill="var(--tag-soft-bg)" stroke="var(--tertiary)" stroke-width="1.5" onclick="selectRing(1)"></circle>
+                            <circle class="ring-shape" cx="160" cy="160" r="42" fill="var(--primary)" stroke="var(--primary-container)" stroke-width="2.5" onclick="selectRing(0)"></circle>
+                            <text x="160" y="164" text-anchor="middle" fill="var(--on-primary)" font-family="Geist Mono, monospace" font-size="12" font-weight="600" style="pointer-events:none;">RING 0</text>
+                            <text x="160" y="102" text-anchor="middle" fill="var(--tertiary)" font-family="Geist Mono, monospace" font-size="11" font-weight="600" style="pointer-events:none;">RING 1</text>
+                            <text x="160" y="68" text-anchor="middle" fill="var(--secondary)" font-family="Geist Mono, monospace" font-size="11" font-weight="600" style="pointer-events:none;">RING 2</text>
+                            <text x="160" y="34" text-anchor="middle" fill="var(--on-surface)" font-family="Geist Mono, monospace" font-size="11" font-weight="600" style="pointer-events:none;">RING 3</text>
+                        </svg>
+                    </div>
+
+                    <div style="display: grid; gap: var(--space-md);">
+                        <div class="lab-controls">
+                            <button type="button" class="btn btn-secondary is-active" data-ring-btn="0" onclick="selectRing(0)">Anillo 0 (Kernel)</button>
+                            <button type="button" class="btn btn-secondary" data-ring-btn="1" onclick="selectRing(1)">Anillo 1 (Syscalls)</button>
+                            <button type="button" class="btn btn-secondary" data-ring-btn="2" onclick="selectRing(2)">Anillo 2 (Bibliotecas)</button>
+                            <button type="button" class="btn btn-secondary" data-ring-btn="3" onclick="selectRing(3)">Anillo 3 (Usuario)</button>
+                        </div>
+                        <div id="ring-detail" class="figure-card" style="background: var(--background);"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comparativa Seguridad de Tipos -->
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Dimensión técnica</th>
+                            <th>C / C++ (Sin seguridad de tipos estricta)</th>
+                            <th>Java / Entornos administrados (JVM Sandbox)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Punteros y memoria</strong></td>
+                            <td>Aritmética libre de punteros y punteros colgantes; lectura/escritura fuera de límites no es frenada por el compilador.</td>
+                            <td>Sin aritmética de punteros directa; referencias opacas gestionadas por la máquina virtual y recolección de basura.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Comprobación de arreglos</strong></td>
+                            <td>Inexistente por defecto; funciones como <code>gets()</code> o <code>strcpy()</code> provocan desbordamiento de búfer.</td>
+                            <td>Verificación automática de índices en cada acceso; lanza excepción antes de corromper memoria adyacente.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Verificación previa</strong></td>
+                            <td>El binario nativo se ejecuta directamente en CPU confiando en la protección de páginas de la MMU.</td>
+                            <td>El verificador de <em>bytecode</em> analiza flujo de control, pila y tipos antes de ejecutar la clase cargada.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- SECCIÓN 6.6 -->
+        <!-- ========================================================= -->
+        <section class="unit-section" id="sec-6-6">
+            <div class="dossier-bar">
+                <div class="dossier-bar-left">
+                    <span class="dossier-pill">Sección 6.6</span>
+                    <span class="dossier-meta">Autenticación, explotación de código y taxonomía de malware</span>
+                </div>
+                <button type="button" class="btn btn-done" data-complete-btn="6.6" onclick="toggleSectionComplete('6.6')">
+                    <i data-lucide="check-circle-2" style="width:16px;height:16px;" aria-hidden="true"></i>
+                    <span>Marcar como estudiado</span>
+                </button>
+            </div>
+
+            <div>
+                <h2 class="section-title">Validación de identidad, errores de memoria y anatomía del malware</h2>
+                <p class="standfirst">Desde contraseñas saladas y cadenas hash de Lamport hasta desbordamientos de búfer y rootkits ocultos bajo el hipervisor.</p>
+            </div>
+
+            <div class="editorial-split">
+                <div class="prose-col">
+                    <p>
+                        Antes de aplicar cualquier matriz de control de acceso, el sistema operativo debe saber con certeza <em>quién</em> es el usuario. La <strong>autenticación</strong> descansa en tres factores clásicos: <strong>algo que se conoce</strong> (contraseñas), <strong>algo que se posee</strong> (tarjetas inteligentes, tokens) y <strong>algo que se es</strong> (biometría: huellas, iris o voz). En UNIX, las contraseñas no se almacenan en texto claro sino como salida de una función unidireccional; para impedir ataques con diccionarios precalculados se agrega una cadena aleatoria llamada <strong>sal (<em>salt</em>)</strong> antes de calcular el resumen.
+                    </p>
+                    <p>
+                        Cuando la red es insegura, las <strong>contraseñas de un solo uso (OTP)</strong> mediante <em>cadenas hash de Lamport</em> evitan el robo por escucha: el servidor guarda <code>H^n(s)</code> y en cada sesión el usuario envía el eslabón anterior <code>H^(n-k)(s)</code>, verificable aplicando <code>H</code> una sola vez. También existen esquemas de <strong>reto-respuesta</strong> (donde el servidor envía un número aleatorio <em>nonce</em> que el cliente transforma con su secreto), <strong>tarjetas inteligentes</strong> con CPU embebida (a diferencia de las tarjetas pasivas de valor almacenado) y sistemas <strong>biométricos</strong> combinados en autenticación multifactor.
+                    </p>
+                </div>
+
+                <aside class="aside-box">
+                    <h3>Ataques internos clásicos</h3>
+                    <ul class="aside-list">
+                        <li><strong>Bombas lógicas y de tiempo:</strong> código oculto insertado por un empleado que detona al cumplirse una condición o fecha específica (ej. despido del programador).</li>
+                        <li><strong>Puertas traseras (Trapdoors / Backdoors):</strong> bifurcación insertada en la rutina de login para eludir la verificación de contraseña.</li>
+                        <li><strong>Suplantación de inicio de sesión:</strong> pantalla falsa para capturar credenciales (mitigada en Windows NT/Vista mediante la secuencia segura <code>CTRL-ALT-SUPR</code> interceptada por el driver).</li>
+                    </ul>
+                </aside>
+            </div>
+
+            <!-- Laboratorio interactivo 6.6A: Salado + Lamport OTP -->
+            <div class="lab-panel">
+                <div class="lab-header">
+                    <div>
+                        <span class="dossier-meta">Laboratorio criptográfico · Autenticación segura</span>
+                        <h3 class="lab-title">Demostrador de Salado (Salt) y Cadenas Hash de Lamport (OTP)</h3>
+                    </div>
+                    <span class="dossier-meta">Observa cómo el salt rompe hashes idénticos y cómo avanza la OTP</span>
+                </div>
+
+                <div class="lab-controls">
+                    <div class="field-group" style="flex: 1 1 200px;">
+                        <label for="auth-pass">Contraseña de prueba</label>
+                        <input id="auth-pass" type="text" class="field-input" value="Sistemas2026" oninput="updateAuthDemo()">
+                    </div>
+                    <div class="field-group" style="flex: 1 1 160px;">
+                        <label for="auth-salt">Salt aleatorio (hex)</label>
+                        <input id="auth-salt" type="text" class="field-input" value="9f4a2c1b" oninput="updateAuthDemo()">
+                    </div>
+                    <button type="button" class="btn btn-secondary" onclick="randomizeSalt()">Nuevo salt aleatorio</button>
+                    <button type="button" class="btn btn-primary" onclick="stepLamportOtp()">Simular siguiente inicio OTP</button>
+                </div>
+
+                <div class="editorial-split" style="grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);">
+                    <div id="salt-output" class="code-box"></div>
+                    <div id="lamport-output" class="code-box"></div>
+                </div>
+            </div>
+
+            <!-- Laboratorio interactivo 6.6B: Simulador de Buffer Overflow en la Pila -->
+            <div class="lab-panel">
+                <div class="lab-header">
+                    <div>
+                        <span class="dossier-meta">Simulador de explotación · Explotación de código</span>
+                        <h3 class="lab-title">Anatomía de un Desbordamiento de Búfer (Buffer Overflow) en la Pila</h3>
+                    </div>
+                    <span class="dossier-meta">Compara entrada normal, ataque en C inseguro y defensa moderna</span>
+                </div>
+
+                <div class="lab-controls">
+                    <button type="button" class="btn btn-secondary is-active" data-stack-mode="normal" onclick="setStackMode('normal')">1. Entrada normal (8 bytes)</button>
+                    <button type="button" class="btn btn-secondary" data-stack-mode="overflow" onclick="setStackMode('overflow')">2. Desbordamiento con gets()</button>
+                    <button type="button" class="btn btn-secondary" data-stack-mode="defended" onclick="setStackMode('defended')">3. Mitigación (Canario + NX)</button>
+                </div>
+
+                <div class="stack-grid" id="stack-visual"></div>
+                <div id="stack-explanation" class="verdict-banner verdict-allow"></div>
+            </div>
+
+            <!-- Acordeones de Vulnerabilidades Técnicas y Malware -->
+            <div class="accordion-list" id="sec-6-6-accordions">
+                <div class="accordion-item is-open">
+                    <button type="button" class="accordion-trigger" aria-expanded="true" onclick="toggleAccordion(this)">
+                        <span class="accordion-trigger-left">
+                            <span class="index-num">A</span>
+                            <span>Explotación de errores (bugs) en el código: Cadenas de formato, Return-to-libc, Inyección y Escalada</span>
+                        </span>
+                        <i data-lucide="chevron-down" style="width:18px;height:18px;" aria-hidden="true"></i>
+                    </button>
+                    <div class="accordion-body">
+                        <ul class="aside-list">
+                            <li><strong>Ataques por cadenas de formato:</strong> pasar entradas de usuario sin sanitizar a <code>printf(cadena)</code> permite usar especificadores como <code>%x</code> para leer la pila y <code>%n</code> para escribir la cantidad de caracteres impresos directamente en una dirección arbitraria de memoria.</li>
+                            <li><strong>Retorno a libc (Return-to-libc):</strong> cuando la pila está marcada como no ejecutable (bit NX/DEP), el atacante sobrescribe la dirección de retorno no con shellcode propio, sino con la dirección de funciones legítimas residentes en memoria como <code>system("/bin/sh")</code> dentro de la biblioteca estándar <code>libc</code>.</li>
+                            <li><strong>Desbordamiento de enteros e inyección de código/comandos:</strong> cálculos de tamaño que envuelven a números pequeños al superar 2³² provocan reservas insuficientes de memoria; asimismo, concatenar entradas en intérpretes de shell permite encadenar comandos como <code>; mail atacante &lt; /etc/passwd</code>.</li>
+                            <li><strong>Escalada de privilegios:</strong> engaño a demonios privilegiados (como <code>cron</code> o binarios <code>SETUID</code> ejecutados como <code>root</code>) para ejecutar acciones administrativas fuera de los permisos del atacante.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <button type="button" class="accordion-trigger" aria-expanded="false" onclick="toggleAccordion(this)">
+                        <span class="accordion-trigger-left">
+                            <span class="index-num">B</span>
+                            <span>Malware clásico: Virus (7 categorías), Gusanos (Worms), Troyanos y Spyware</span>
+                        </span>
+                        <i data-lucide="chevron-down" style="width:18px;height:18px;" aria-hidden="true"></i>
+                    </button>
+                    <div class="accordion-body">
+                        <ul class="aside-list">
+                            <li><strong>Virus informáticos:</strong> fragmentos de código autorreplicante que infectan un programa anfitrión. Tanenbaum clasifica siete tipos según el vector infectado: <em>de compañía</em> (se ejecuta antes que el objetivo mediante prioridad de extensión o accesos directos), <em>de programa ejecutable</em> (sobrescritura o inserción con redirección de entrada), <em>residentes en memoria</em> (capturan vectores de interrupción), <em>del sector de arranque</em>, <em>de driver de dispositivo</em>, <em>de macro</em> (documentos con scripts activos) y <em>de código fuente</em>.</li>
+                            <li><strong>Gusanos (Worms):</strong> programas independientes y autónomos que no necesitan archivo anfitrión; explotan vulnerabilidades de red para propagarse de máquina en máquina (como el histórico gusano Morris de 1988).</li>
+                            <li><strong>Caballos de Troya (Troyanos):</strong> programas aparentemente legítimos y útiles descargados por el usuario que, bajo sus privilegios, ejecutan en secreto acciones dañinas o abren puertas de acceso remoto.</li>
+                            <li><strong>Spyware:</strong> software clandestino en segundo plano dedicado al seguimiento publicitario, vigilancia corporativa o reclutamiento en redes de <em>zombies</em>.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <button type="button" class="accordion-trigger" aria-expanded="false" onclick="toggleAccordion(this)">
+                        <span class="accordion-trigger-left">
+                            <span class="index-num">C</span>
+                            <span>Rootkits y ocultamiento en cinco niveles del sistema (del usuario al firmware)</span>
+                        </span>
+                        <i data-lucide="chevron-down" style="width:18px;height:18px;" aria-hidden="true"></i>
+                    </button>
+                    <div class="accordion-body">
+                        <p>Un <strong>rootkit</strong> oculta activamente su propia presencia y la de su malware incluso frente a herramientas de inspección del administrador:</p>
+                        <ul class="aside-list">
+                            <li><strong>1. Rootkits de aplicación / biblioteca:</strong> reemplazan utilidades del sistema (<code>ls</code>, <code>ps</code>) o interceptan funciones en <code>libc</code> para filtrar archivos y procesos ocultos.</li>
+                            <li><strong>2. Rootkits de kernel:</strong> se instalan como módulos o drivers de dispositivo del núcleo, manipulando directamente las tablas de llamadas del sistema.</li>
+                            <li><strong>3. Rootkits de hipervisor (ej. Blue Pill):</strong> arrancan por debajo del sistema operativo ejecutándolo dentro de una máquina virtual oculta, invisibles para escáneres dentro del SO invitado.</li>
+                            <li><strong>4. Rootkits de firmware:</strong> se incrustan en la memoria del BIOS/UEFI para retomar control en cada encendido. Su detección fiable exige arrancar desde medios externos confiables de sólo lectura y comparar hashes criptográficos fuera de línea.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- SECCIÓN 6.7 -->
+        <!-- ========================================================= -->
+        <section class="unit-section" id="sec-6-7">
+            <div class="dossier-bar">
+                <div class="dossier-bar-left">
+                    <span class="dossier-pill">Sección 6.7</span>
+                    <span class="dossier-meta">Criptografía, firmas digitales, PKI y hardware confiable</span>
+                </div>
+                <button type="button" class="btn btn-done" data-complete-btn="6.7" onclick="toggleSectionComplete('6.7')">
+                    <i data-lucide="check-circle-2" style="width:16px;height:16px;" aria-hidden="true"></i>
+                    <span>Marcar como estudiado</span>
+                </button>
+            </div>
+
+            <div>
+                <h2 class="section-title">Cifrado simétrico, clave pública, resúmenes hash e infraestructura TPM</h2>
+                <p class="standfirst">La criptografía transforma texto plano en texto cifrado para proteger datos en tránsito y en reposo, mientras las firmas y el TPM aseguran autenticidad e integridad.</p>
+            </div>
+
+            <div class="editorial-split">
+                <div class="prose-col">
+                    <p>
+                        La <strong>criptografía</strong> convierte un mensaje legible (<em>texto plano</em>, <code>P</code>) en una secuencia incomprensible (<em>texto cifrado</em>, <code>C = E(P, K)</code>) que sólo puede revertirse mediante la función de descifrado y la clave adecuada (<code>P = D(C, K)</code>). Siguiendo el principio de Kerckhoffs, el algoritmo es público y toda la seguridad reside en el secreto y longitud de la clave.
+                    </p>
+                    <p>
+                        En la <strong>criptografía de clave simétrica (o secreta)</strong>, emisor y receptor comparten exactamente la misma clave. Algoritmos históricos como <strong>DES</strong> (clave efectiva de 56 bits, hoy vulnerable por fuerza bruta) cedieron paso a estándares modernos como <strong>AES</strong> (claves de 128, 192 o 256 bits). Aunque es sumamente veloz para cifrar grandes volúmenes de disco o red, plantea el problema de cómo distribuir la clave secreta inicial sin que sea interceptada.
+                    </p>
+                    <p>
+                        La <strong>criptografía de clave pública (asimétrica)</strong>, ejemplificada por <strong>RSA</strong>, resuelve este dilema empleando un par matemático de claves: una <em>clave pública</em> (para cifrar mensajes hacia el titular o verificar sus firmas) y una <em>clave privada</em> secreta (para descifrar o firmar). En la práctica, los sistemas operativos emplean esquemas híbridos: usan clave pública para acordar una clave de sesión y cifran los datos masivos con AES.
+                    </p>
+                </div>
+
+                <aside class="aside-box">
+                    <h3>Hardware confiable y disco</h3>
+                    <ul class="aside-list">
+                        <li><strong>TPM (Trusted Platform Module):</strong> coprocesador criptográfico integrado en la placa base que resguarda claves privadas fuera del alcance del sistema operativo, mide hashes de arranque (BIOS/bootloader) y habilita atestación remota.</li>
+                        <li><strong>BitLocker y EFS:</strong> en sistemas Windows modernos, EFS cifra archivos individuales por usuario y BitLocker cifra volúmenes completos vinculando sus claves maestras a los registros del TPM para proteger equipos robados.</li>
+                    </ul>
+                </aside>
+            </div>
+
+            <div class="key-term-grid">
+                <article class="term-box">
+                    <span class="term-tag">Integridad</span>
+                    <h4>Funciones Hash Criptográficas</h4>
+                    <p>Comprimen cualquier volumen de datos en una huella digital fija de un solo sentido (es computacionalmente inviable invertirlas o hallar dos entradas con el mismo hash). <strong>MD5</strong> (128 bits) está obsoleto por colisiones prácticas; hoy se exige <strong>SHA-256 / SHA-2</strong> o SHA-3.</p>
+                </article>
+                <article class="term-box gold-accent">
+                    <span class="term-tag">Autenticidad y no repudio</span>
+                    <h4>Firmas Digitales</h4>
+                    <p>Aprovechan funciones conmutativas como RSA: el emisor calcula el hash del documento y lo cifra con su <em>clave privada</em> (<code>D</code>). El receptor aplica la <em>clave pública</em> del emisor (<code>E</code>) y comprueba que coincida con el hash calculado localmente.</p>
+                </article>
+                <article class="term-box pine-accent">
+                    <span class="term-tag">Confianza PKI</span>
+                    <h4>Certificados Digitales y CAs</h4>
+                    <p>Un certificado vincula un nombre o dominio con su clave pública y lleva la firma digital de una tercera parte de confianza: la <strong>Autoridad de Certificación (CA)</strong>. Así se impide que un atacante sustituya claves públicas en tránsito.</p>
+                </article>
+            </div>
+
+            <!-- Laboratorio interactivo 6.7: Banco Criptográfico en vivo -->
+            <div class="lab-panel">
+                <div class="lab-header">
+                    <div>
+                        <span class="dossier-meta">Laboratorio interactivo · Hash SHA-256, Cifrado y Firma</span>
+                        <h3 class="lab-title">Banco de Pruebas Criptográficas en Tiempo Real</h3>
+                    </div>
+                    <span class="dossier-meta">Modifica el mensaje o la clave para observar el efecto avalancha</span>
+                </div>
+
+                <div class="lab-controls">
+                    <div class="field-group" style="flex: 2 1 260px;">
+                        <label for="crypto-msg">Texto plano del mensaje</label>
+                        <input id="crypto-msg" type="text" class="field-input" value="Transferir 500 créditos al proceso P2" oninput="runCryptoLab()">
+                    </div>
+                    <div class="field-group" style="flex: 1 1 160px;">
+                        <label for="crypto-key">Clave simétrica compartida</label>
+                        <input id="crypto-key" type="text" class="field-input" value="K_AES_256" oninput="runCryptoLab()">
+                    </div>
+                    <button type="button" class="btn btn-secondary" onclick="tamperCryptoSignature()">Simular alteración en tránsito</button>
+                </div>
+
+                <div id="crypto-output" class="code-box"></div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- SECCIÓN DE CRÉDITOS Y DATOS ACADÉMICOS (VERSIÓN ESTÁTICA) -->
+        <!-- ========================================================= -->
+        <section class="unit-section" id="sec-creditos">
+            <div class="dossier-bar">
+                <div class="dossier-bar-left">
+                    <span class="dossier-pill">Créditos Académicos</span>
+                    <span class="dossier-meta">Ficha institucional y equipo de desarrollo</span>
+                </div>
+            </div>
+
+            <div>
+                <h2 class="section-title">Créditos y Equipo de Trabajo</h2>
+                <p class="standfirst">Información académica oficial de la asignatura y equipo de desarrollo.</p>
+            </div>
+
+            <div class="credits-banner">
+                <div>
+                    <span class="dossier-meta">Carrera</span>
+                    <div style="font-family: var(--font-headline); font-size: 1.25rem; font-weight: 600;">Ingeniería en Sistemas Computacionales</div>
+                </div>
+                <div>
+                    <span class="dossier-meta">Materia</span>
+                    <div style="font-family: var(--font-headline); font-size: 1.25rem; font-weight: 600;">Sistemas Operativos</div>
+                </div>
+                <div>
+                    <span class="dossier-meta">Docente</span>
+                    <div style="font-family: var(--font-headline); font-size: 1.25rem; font-weight: 600;">Myrna Villegas Gaytán</div>
+                </div>
+            </div>
+
+            <!-- Contenedor estático del equipo (sin id="team-grid" para evitar que JS lo modifique) -->
+            <div class="team-grid">
+
+                <!-- INTEGRANTE 1 -->
+                <article class="member-card">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span class="index-num">INTEGRANTE 01</span>
+                        
+                    </div>
+                    <div class="avatar-frame">
+                        <div class="avatar-circle">
+                            <!-- Reemplaza la URL en src con la ruta a tu imagen -->
+                            <img src="Aaron.jpeg" alt="Foto Integrante 1">
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <label>Nombre del alumno</label>
+                        <div style="font-family: var(--font-headline); font-size: 1.15rem; font-weight: 600;">Aarón Eduardo Hernández Gutiérrez</div>
+                    </div>
+                    <div class="field-group">
+                        <label>Número de control</label>
+                        <div style="font-family: var(--font-body); font-size: 1rem;">25410137</div>
+                    </div>
+                </article>
+
+                <!-- INTEGRANTE 2 -->
+                <article class="member-card">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span class="index-num">INTEGRANTE 02</span>
+                       
+                    </div>
+                    <div class="avatar-frame">
+                        <div class="avatar-circle accent-gold">
+                            <!-- Reemplaza la URL en src con la ruta a tu imagen -->
+                            <img src="Alan.png" alt="Foto Integrante 2">
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <label>Nombre del alumno</label>
+                        <div style="font-family: var(--font-headline); font-size: 1.15rem; font-weight: 600;">Alan Chavez Corrugedo</div>
+                    </div>
+                    <div class="field-group">
+                        <label>Número de control</label>
+                        <div style="font-family: var(--font-body); font-size: 1rem;">25410139</div>
+                    </div>
+                </article>
+
+                <!-- INTEGRANTE 3 -->
+                <article class="member-card">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span class="index-num">INTEGRANTE 03</span>
+                       
+                    </div>
+                    <div class="avatar-frame">
+                        <div class="avatar-circle accent-pine">
+                            <!-- Reemplaza la URL en src con la ruta a tu imagen -->
+                            <img src="Yendi.png" alt="Foto Integrante 3">
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <label>Nombre del alumno</label>
+                        <div style="font-family: var(--font-headline); font-size: 1.15rem; font-weight: 600;">Yendi Pamela Peña Pasillas</div>
+                    </div>
+                    <div class="field-group">
+                        <label>Número de control</label>
+                        <div style="font-family: var(--font-body); font-size: 1rem;">25410133</div>
+                    </div>
+                </article>
+
+                <!-- INTEGRANTE 4 -->
+                <article class="member-card">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span class="index-num">INTEGRANTE 04</span>
+                    
+                    </div>
+                    <div class="avatar-frame">
+                        <div class="avatar-circle accent-ink">
+                            <!-- Reemplaza la URL en src con la ruta a tu imagen -->
+                            <img src="Hugo.png" alt="Foto Integrante 4">
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <label>Nombre del alumno</label>
+                        <div style="font-family: var(--font-headline); font-size: 1.15rem; font-weight: 600;">Hugo Fernando Yañez Orpineda</div>
+                    </div>
+                    <div class="field-group">
+                        <label>Número de control</label>
+                        <div style="font-family: var(--font-body); font-size: 1rem;">25410155</div>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+        <footer class="doc-footer">
+            <div>
+                <strong>Unidad 6 · Protección y Seguridad</strong> — Ingeniería en Sistemas Computacionales · Sistemas Operativos.
+            </div>
+            <div>
+                Fuentes académicas base: <em>Sistemas Operativos Modernos</em> (Andrew S. Tanenbaum) y <em>Sistemas Operativos</em> (William Stallings).
+            </div>
+        </footer>
+    </div>
+
+  <api-shim></api-shim>
+
+  <script>
+    // =========================================================================
+    // DATOS ESTRUCTURADOS DEL CONTENIDO INTERACTIVO
+    // =========================================================================
+    const PRINCIPLES_DATA = [
+      {
+        title: `1. Economía de mecanismos`,
+        summary: `Mantener el diseño de protección lo más pequeño, claro y simple posible para facilitar su verificación e inspección.`,
+        failure: `Un kernel monolítico con millones de líneas y controladores complejos oculta errores difíciles de auditar.`,
+        practice: `Microkernels como MINIX 3 reducen la TCB a unas 4,000 líneas críticas y trasladan drivers al espacio de usuario.`
+      },
+      {
+        title: `2. Valores por defecto a prueba de fallos`,
+        summary: `Las decisiones de acceso deben basarse en permisos explícitos; la opción predeterminada debe ser denegar el acceso.`,
+        failure: `Si al fallar la lectura de una ACL el sistema concede acceso temporal, cualquier error de disco abriría brechas totales.`,
+        practice: `Al crear un archivo nuevo o reiniciar servicios, sólo el propietario tiene permisos hasta que otorgue otros explícitamente.`
+      },
+      {
+        title: `3. Mediación completa`,
+        summary: `Todo acceso a cualquier objeto debe comprobarse cada vez que se solicita, sin asumir permisos cacheados obsoletos.`,
+        failure: `Verificar permisos únicamente al abrir una sesión permite que un usuario conserve acceso aunque sus privilegios hayan sido revocados.`,
+        practice: `El Monitor de Referencia valida cada operación crítica contra el estado actual de seguridad.`
+      },
+      {
+        title: `4. Diseño abierto`,
+        summary: `La seguridad del mecanismo nunca debe depender del secreto de su diseño o algoritmo («seguridad por oscuridad»).`,
+        failure: `Confiar en que nadie desensamblará un formato propietario de contraseñas fracasa tan pronto se filtra el binario.`,
+        practice: `Algoritmos públicos y auditados como AES y RSA depositan toda la confidencialidad únicamente en el secreto de la clave.`
+      },
+      {
+        title: `5. Separación de privilegios`,
+        summary: `Un mecanismo de protección que exige dos condiciones o llaves independientes para otorgar acceso es mucho más robusto que uno único.`,
+        failure: `Un solo rol omnipotente permite que un compromiso aislado destruya auditorías y respaldos simultáneamente.`,
+        practice: `Autenticación de dos factores (algo que sabes + algo que tienes) o separación entre administrador de seguridad y operador.`
+      },
+      {
+        title: `6. Mínimo privilegio (POLA)`,
+        summary: `Cada programa y usuario debe operar usando únicamente el subconjunto mínimo de privilegios necesarios para completar su tarea.`,
+        failure: `Ejecutar un servidor web o un navegador con cuenta root permite que un desbordamiento de búfer comprometa todo el sistema.`,
+        practice: `En Windows Vista, Internet Explorer protegido corre con nivel de integridad bajo; en Linux, los demonios abandonan root tras abrir su puerto.`
+      },
+      {
+        title: `7. Mínimo mecanismo común`,
+        summary: `Minimizar la cantidad de estructuras compartidas entre distintos usuarios para evitar interferencias o canales encubiertos.`,
+        failure: `Compartir búferes globales o archivos temporales sin aislamiento expone datos residuales entre procesos.`,
+        practice: `Cada proceso dispone de su propio espacio de direcciones virtuales y las páginas liberadas se ponen en ceros antes de reasignarse.`
+      },
+      {
+        title: `8. Aceptabilidad psicológica`,
+        summary: `La interfaz humana de seguridad debe ser natural y comprensible para que los usuarios la apliquen de forma correcta sin intentar eludirla.`,
+        failure: `Exigir contraseñas incomprensibles cambiadas cada semana provoca que los usuarios las anoten en notas adhesivas sobre el monitor.`,
+        practice: `Mensajes claros de autorización (como UAC o diálogos de permisos móviles) y uso de biometría o gestores integrados.`
+      }
+    ];
+
+    const TCSEC_DATA = {
+      D: {
+        badge: `División D · Protección mínima`,
+        title: `Nivel D — Sin certificación de seguridad`,
+        desc: `Se asigna a sistemas que han sido evaluados y no cumplen los requisitos de ninguna clase superior. Carecen de autenticación fiable y de aislamiento de memoria entre procesos.`,
+        reqs: [`Sin inicio de sesión obligatorio por usuario.`, `Cualquier programa puede sobrescribir estructuras del sistema.`, `Ejemplos históricos: MS-DOS, Windows 95/98.`]
+      },
+      C1: {
+        badge: `División C · Protección discrecional`,
+        title: `Nivel C1 — Protección de seguridad discrecional`,
+        desc: `Introduce la separación básica entre usuarios y datos mediante controles de acceso discrecional (DAC), adecuada para entornos cooperativos donde usuarios del mismo nivel comparten una máquina.`,
+        reqs: [`Autenticación básica por identidad.`, `Separación entre código del sistema operativo y programas de usuario.`, `Permisos de archivo por propietario/grupo.`]
+      },
+      C2: {
+        badge: `División C · Acceso controlado`,
+        title: `Nivel C2 — Protección de acceso controlada (Libro Naranja)`,
+        desc: `Endurece la granularidad del control discrecional hasta usuarios individuales y exige rendición de cuentas completa. Fue la meta de diseño original de Windows NT y versiones clásicas de UNIX endurecido.`,
+        reqs: [`Inicio de sesión seguro con medidas anti-suplantación (ej. CTRL-ALT-SUPR).`, `Puesta a cero de páginas de memoria y bloques de disco antes de reasignarlos.`, `Bitácora de auditoría de eventos de seguridad por usuario.`]
+      },
+      B1: {
+        badge: `División B · Protección obligatoria`,
+        title: `Nivel B1 — Protección de seguridad etiquetada`,
+        desc: `Primer nivel que exige Control de Acceso Obligatorio (MAC). Tanto sujetos como objetos portan etiquetas formales de sensibilidad (ej. Secreto, Confidencial) gobernadas por reglas tipo Bell-LaPadula.`,
+        reqs: [`Etiquetado obligatorio en todos los archivos, procesos y dispositivos.`, `El propietario no puede degradar ni compartir archivos violando las etiquetas MAC.`, `Modelo informal de la política de seguridad.`]
+      },
+      B2: {
+        badge: `División B · Protección estructurada`,
+        title: `Nivel B2 — Protección estructurada`,
+        desc: `La arquitectura interna del kernel se divide formalmente en módulos críticos de seguridad y componentes no críticos, minimizando la TCB y analizando canales encubiertos.`,
+        reqs: [`Modelo matemático formal de la política de seguridad.`, `Aislamiento estricto por anillos o segmentos de hardware.`, `Identificación y acotamiento de canales encubiertos de almacenamiento.`]
+      },
+      B3: {
+        badge: `División B · Dominios de seguridad`,
+        title: `Nivel B3 — Dominios de seguridad`,
+        desc: `Exige una ingeniería de TCB altamente minimalista que implemente un Monitor de Referencia completo e inmune a manipulaciones.`,
+        reqs: [`Monitor de Referencia pequeño, modular y sin código innecesario.`, `Detección activa de intentos de intrusión en tiempo real.`, `Mecanismos confiables de recuperación segura tras fallos.`]
+      },
+      A1: {
+        badge: `División A · Protección verificada`,
+        title: `Nivel A1 — Diseño verificado formalmente`,
+        desc: `Máximo nivel del Libro Naranja. Funcionalmente equivalente a B3, pero exige demostración matemática formal desde la especificación de alto nivel hasta el código fuente y control estricto de distribución.`,
+        reqs: [`Verificación matemática formal de que el diseño cumple la política.`, `Análisis exhaustivo de canales encubiertos de temporización y almacenamiento.`, `Cadena de custodia verificada en compilación y distribución (equivalente a EAL6–EAL7 en Common Criteria).`]
+      }
+    };
+
+    const RINGS_DATA = [
+      {
+        ring: `Anillo 0 — Kernel del Sistema Operativo`,
+        tag: `Máximo privilegio · Hardware supervisor`,
+        desc: `Aloja el núcleo del sistema operativo: planificador de CPU, administración de memoria virtual, control de interrupciones y drivers críticos de bajo nivel. Tiene acceso directo a instrucciones privilegiadas del procesador y a toda la memoria física.`
+      },
+      {
+        ring: `Anillo 1 — Manejador de Llamadas al Sistema y Servicios`,
+        tag: `Privilegio intermedio · Compuertas de llamada`,
+        desc: `En arquitecturas segmentadas de cuatro niveles como MULTICS, contiene los servicios protegidos del sistema operativo y manejadores de syscalls. Los programas externos sólo ingresan aquí invocando selectores oficiales (call gates), nunca mediante saltos arbitrarios.`
+      },
+      {
+        ring: `Anillo 2 — Bibliotecas Compartidas y Subsistemas`,
+        tag: `Privilegio moderado · Código reutilizable`,
+        desc: `Contiene bibliotecas compartidas, rutinas de E/S de alto nivel o código del entorno de ejecución que requiere mayor protección frente a manipulaciones directas de la aplicación principal.`
+      },
+      {
+        ring: `Anillo 3 — Espacio de Usuario (Aplicaciones)`,
+        tag: `Menor privilegio · Modo usuario`,
+        desc: `Ejecuta navegadores, editores, compiladores y código descargado. Cualquier intento de acceder directamente a estructuras de anillos internos (0–2) o ejecutar instrucciones privilegiadas dispara una trampa de protección en el hardware.`
+      }
+    ];
+
+    // Matriz de acceso 6.4: 3 dominios x 4 objetos
+    const MATRIX_DOMAINS = [
+      `Dominio 1 (Usuario Ana)`,
+      `Dominio 2 (Proceso Contable)`,
+      `Dominio 3 (Invitado)`
+    ];
+    const MATRIX_OBJECTS = [
+      { name: `Archivo1 (Informe)`, perms: [`R`, `W`, `X`] },
+      { name: `Archivo2 (Nómina)`, perms: [`R`, `W`] },
+      { name: `Impresora1`, perms: [`W`] },
+      { name: `Dominio 2`, perms: [`Enter`] }
+    ];
+
+    let matrixState = [
+      [[`R`, `W`], [], [`W`], [`Enter`]],
+      [[`R`], [`R`, `W`], [`W`], []],
+      [[`R`], [], [], []]
+    ];
+
+    let lamportStep = 0;
+    let cryptoTampered = false;
+
+    const DEFAULT_TEAM = [
+      { name: ``, control: ``, role: `Investigación y Redacción`, accent: `secondary` },
+      { name: ``, control: ``, role: `Arquitectura y Modelos`, accent: `gold` },
+      { name: ``, control: ``, role: `Seguridad y Malware`, accent: `pine` },
+      { name: ``, control: ``, role: `Criptografía y Validación`, accent: `ink` }
+    ];
+
+    let appState = {
+      completedSections: [],
+      team: JSON.parse(JSON.stringify(DEFAULT_TEAM))
+    };
+
+    // Fotos temporales en memoria de sesión (NO se envían a setAppState)
+    const sessionPhotos = [null, null, null, null];
+
+    // =========================================================================
+    // SECCIÓN 6.1: PRINCIPIOS DE DISEÑO
+    // =========================================================================
+    function selectPrinciple(idx) {
+      const buttons = document.querySelectorAll('#principles-tabs button');
+      buttons.forEach(function (btn, i) {
+        if (i === idx) btn.classList.add('is-active');
+        else btn.classList.remove('is-active');
+      });
+      const item = PRINCIPLES_DATA[idx];
+      const box = document.getElementById('principle-detail');
+      if (!box || !item) return;
+      box.innerHTML = `
+        <span class="term-tag">Principio de diseño</span>
+        <h4 style="font-family:var(--font-headline); font-size:1.25rem; margin:0 0 var(--space-xs) 0;">${item.title}</h4>
+        <p>${item.summary}</p>
+        <div class="editorial-split" style="grid-template-columns: minmax(0,1fr) minmax(0,1fr); margin-top: var(--space-sm);">
+          <div class="verdict-banner verdict-deny"><strong>Error común:</strong> ${item.failure}</div>
+          <div class="verdict-banner verdict-allow"><strong>Aplicación correcta:</strong> ${item.practice}</div>
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // SECCIÓN 6.2: TCSEC LIBRO NARANJA
+    // =========================================================================
+    function selectTcsec(level) {
+      const btns = document.querySelectorAll('#tcsec-buttons button');
+      btns.forEach(function (b) {
+        if (b.textContent.indexOf(level) !== -1) b.classList.add('is-active');
+        else b.classList.remove('is-active');
+      });
+      const data = TCSEC_DATA[level];
+      const out = document.getElementById('tcsec-output');
+      if (!data || !out) return;
+      const itemsHtml = data.reqs.map(function (r) {
+        return `<li>${r}</li>`;
+      }).join('');
+      out.innerHTML = `
+        <span class="term-tag">${data.badge}</span>
+        <h4 style="font-family:var(--font-headline); font-size:1.25rem; margin:0 0 var(--space-xs) 0;">${data.title}</h4>
+        <p>${data.desc}</p>
+        <ul class="aside-list" style="margin-top:var(--space-sm);">${itemsHtml}</ul>
+      `;
+    }
+
+    // =========================================================================
+    // SECCIÓN 6.3: SIMULADOR BELL-LAPADULA vs BIBA vs DAC
+    // =========================================================================
+    function evaluateMacFlow() {
+      const modelEl = document.getElementById('mac-model');
+      const subjEl = document.getElementById('mac-subject');
+      const opEl = document.getElementById('mac-op');
+      const objEl = document.getElementById('mac-object');
+      const resEl = document.getElementById('mac-result');
+      if (!modelEl || !subjEl || !opEl || !objEl || !resEl) return;
+
+      const model = modelEl.value;
+      const k = parseInt(subjEl.value, 10);
+      const m = parseInt(objEl.value, 10);
+      const op = opEl.value;
+
+      let allowed = false;
+      let title = '';
+      let reason = '';
+
+      if (model === 'dac') {
+        allowed = true;
+        title = 'PERMITIDO bajo Control Discrecional (DAC)';
+        reason = `En DAC el Monitor de Referencia no compara niveles jerárquicos (${k} vs ${m}); verifica únicamente si el propietario del objeto incluyó al sujeto en la lista de permisos. Advertencia: un proceso troyano en nivel ${k} podría copiar datos del nivel ${m} si el usuario tiene permiso.`;
+      } else if (model === 'blp') {
+        if (op === 'read') {
+          allowed = k >= m;
+          title = allowed ? 'PERMITIDO — Cumple Propiedad de Seguridad Simple' : 'BLOQUEADO — Viola «No leer hacia arriba»';
+          reason = allowed
+            ? `El sujeto (nivel ${k}) puede leer del objeto (nivel ${m}) porque ${k} ≥ ${m}. La información fluye hacia igual o mayor confidencialidad.`
+            : `Un sujeto de nivel ${k} no puede leer un objeto de nivel ${m} (${k} < ${m}). Permitirlo provocaría exposición de secretos a un nivel inferior.`;
+        } else {
+          allowed = k <= m;
+          title = allowed ? 'PERMITIDO — Cumple Propiedad * de Bell-LaPadula' : 'BLOQUEADO — Viola «No escribir hacia abajo»';
+          reason = allowed
+            ? `El sujeto (nivel ${k}) puede escribir en el objeto (nivel ${m}) porque ${k} ≤ ${m}. Ningún dato confidencial desciende de nivel.`
+            : `Un sujeto de nivel ${k} no puede escribir en un objeto de nivel ${m} (${k} > ${m}). Un proceso comprometido de alto nivel podría filtrar secretos hacia un archivo de bajo nivel.`;
+        }
+      } else {
+        // Biba
+        if (op === 'read') {
+          allowed = k <= m;
+          title = allowed ? 'PERMITIDO — Cumple Propiedad * de Integridad (Biba)' : 'BLOQUEADO — Viola «No leer hacia abajo»';
+          reason = allowed
+            ? `El sujeto (nivel ${k}) lee un objeto de integridad igual o superior (${m} ≥ ${k}), evitando contaminarse con datos menos confiables.`
+            : `Un sujeto de integridad ${k} no puede leer de un objeto de menor integridad (${m} < ${k}), porque incorporaría datos no verificados o corruptos.`;
+        } else {
+          allowed = k >= m;
+          title = allowed ? 'PERMITIDO — Cumple Principio de Integridad Simple (Biba)' : 'BLOQUEADO — Viola «No escribir hacia arriba»';
+          reason = allowed
+            ? `El sujeto (nivel ${k}) puede escribir en un objeto de nivel ${m} (${k} ≥ ${m}) sin degradar la confiabilidad del destino.`
+            : `Un sujeto de integridad ${k} no puede sobrescribir un objeto de nivel superior (${m} > ${k}), protegiendo la integridad estratégica de niveles altos.`;
+        }
+      }
+
+      resEl.className = 'verdict-banner ' + (allowed ? 'verdict-allow' : 'verdict-deny');
+      resEl.innerHTML = `<strong>Monitor de Referencia: ${title}</strong><br>${reason}`;
+    }
+
+    // =========================================================================
+    // SECCIÓN 6.4: MATRIZ DE PROTECCIÓN <-> ACL <-> C-LIST
+    // =========================================================================
+    function toggleMatrixPerm(dIdx, oIdx, perm) {
+      const cell = matrixState[dIdx][oIdx];
+      const pos = cell.indexOf(perm);
+      if (pos === -1) cell.push(perm);
+      else cell.splice(pos, 1);
+      renderMatrixTable();
+      renderMatrixViews();
+    }
+
+    function renderMatrixTable() {
+      const tbody = document.getElementById('matrix-tbody');
+      if (!tbody) return;
+      tbody.innerHTML = MATRIX_DOMAINS.map(function (domName, dIdx) {
+        const cols = MATRIX_OBJECTS.map(function (obj, oIdx) {
+          const btns = obj.perms.map(function (p) {
+            const granted = matrixState[dIdx][oIdx].indexOf(p) !== -1;
+            const cls = granted ? 'matrix-perm-btn is-granted' : 'matrix-perm-btn';
+            return `<button type="button" class="${cls}" aria-pressed="${granted}" onclick="toggleMatrixPerm(${dIdx}, ${oIdx}, '${p}')">${p}</button>`;
+          }).join(' ');
+          return `<td><div style="display:flex;gap:4px;flex-wrap:wrap;">${btns}</div></td>`;
+        }).join('');
+        return `<tr><td><strong>${domName}</strong></td>${cols}</tr>`;
+      }).join('');
+    }
+
+    function renderMatrixViews() {
+      const objSel = document.getElementById('acl-object-select');
+      const domSel = document.getElementById('clist-domain-select');
+      const aclBox = document.getElementById('acl-view-box');
+      const clistBox = document.getElementById('clist-view-box');
+      if (!objSel || !domSel || !aclBox || !clistBox) return;
+
+      const oIdx = parseInt(objSel.value, 10);
+      const dIdx = parseInt(domSel.value, 10);
+
+      const aclEntries = [];
+      MATRIX_DOMAINS.forEach(function (domName, i) {
+        const perms = matrixState[i][oIdx];
+        if (perms.length > 0) {
+          aclEntries.push(`  • ${domName} → [${perms.join(', ')}]`);
+        }
+      });
+      aclBox.textContent =
+        `ACL(${MATRIX_OBJECTS[oIdx].name}) — Columna ${oIdx + 1}:\n` +
+        (aclEntries.length ? aclEntries.join('\n') : '  (Sin entradas: ningún dominio tiene acceso)');
+
+      const clistEntries = [];
+      MATRIX_OBJECTS.forEach(function (obj, j) {
+        const perms = matrixState[dIdx][j];
+        if (perms.length > 0) {
+          clistEntries.push(`  • Boleto(${obj.name}, [${perms.join(', ')}], f_hmac)`);
+        }
+      });
+      clistBox.textContent =
+        `C-List(${MATRIX_DOMAINS[dIdx]}) — Fila ${dIdx + 1}:\n` +
+        (clistEntries.length ? clistEntries.join('\n') : '  (Lista vacía: el dominio no posee capacidades)');
+    }
+
+    // =========================================================================
+    // SECCIÓN 6.5: ANILLOS DE PROTECCIÓN
+    // =========================================================================
+    function selectRing(ringIdx) {
+      const btns = document.querySelectorAll('[data-ring-btn]');
+      btns.forEach(function (b) {
+        if (parseInt(b.getAttribute('data-ring-btn'), 10) === ringIdx) b.classList.add('is-active');
+        else b.classList.remove('is-active');
+      });
+      const info = RINGS_DATA[ringIdx];
+      const box = document.getElementById('ring-detail');
+      if (!info || !box) return;
+      box.innerHTML = `
+        <span class="term-tag">${info.tag}</span>
+        <h4 style="font-family:var(--font-headline); font-size:1.25rem; margin:0 0 var(--space-xs) 0;">${info.ring}</h4>
+        <p style="margin:0;">${info.desc}</p>
+      `;
+    }
+
+    // =========================================================================
+    // SECCIÓN 6.6: HASH DETERMINÍSTICO + SHA-256, SALADO, LAMPORT Y PILA
+    // =========================================================================
+    async function computeSha256Hex(text) {
+      if (window.crypto && window.crypto.subtle && typeof TextEncoder !== 'undefined') {
+        try {
+          const enc = new TextEncoder().encode(text);
+          const buf = await window.crypto.subtle.digest('SHA-256', enc);
+          const arr = Array.from(new Uint8Array(buf));
+          return arr.map(function (b) {
+            return b.toString(16).padStart(2, '0');
+          }).join('');
+        } catch (e) {
+          // Fallback si el iframe restringe subtle crypto
+        }
+      }
+      // Fallback determinístico estilo FNV/mixing de 256 bits simulado
+      let h1 = 0x811c9dc5;
+      let h2 = 0x9e3779b9;
+      let h3 = 0x85ebca6b;
+      let h4 = 0xc2b2ae35;
+      for (let i = 0; i < text.length; i++) {
+        const c = text.charCodeAt(i);
+        h1 = Math.imul(h1 ^ c, 0x01000193) >>> 0;
+        h2 = Math.imul(h2 ^ (c + i), 0x85ebca6b) >>> 0;
+        h3 = Math.imul(h3 ^ (c * 31), 0xc2b2ae35) >>> 0;
+        h4 = Math.imul(h4 ^ (c ^ 0x5a), 0x27d4eb2f) >>> 0;
+      }
+      return [h1, h2, h3, h4, h1 ^ h3, h2 ^ h4, h1 ^ h2, h3 ^ h4]
+        .map(function (n) { return (n >>> 0).toString(16).padStart(8, '0'); })
+        .join('');
+    }
+
+    function randomizeSalt() {
+      const saltEl = document.getElementById('auth-salt');
+      if (!saltEl) return;
+      const chars = '0123456789abcdef';
+      let s = '';
+      for (let i = 0; i < 8; i++) {
+        s += chars[Math.floor(Math.random() * 16)];
+      }
+      saltEl.value = s;
+      updateAuthDemo();
+    }
+
+    async function updateAuthDemo() {
+      const passEl = document.getElementById('auth-pass');
+      const saltEl = document.getElementById('auth-salt');
+      const saltOut = document.getElementById('salt-output');
+      const lamportOut = document.getElementById('lamport-output');
+      if (!passEl || !saltEl || !saltOut || !lamportOut) return;
+
+      const pass = passEl.value || '';
+      const salt = saltEl.value || '';
+
+      const rawHash = await computeSha256Hex(pass);
+      const saltedHash = await computeSha256Hex(salt + ':' + pass);
+
+      saltOut.textContent =
+        `Almacenamiento con Salado (Salt):\n` +
+        `• Sin salt  H("${pass}"):\n  ${rawHash.slice(0, 40)}…\n` +
+        `• Con salt  ${salt} + "${pass}":\n  ${saltedHash.slice(0, 40)}…\n` +
+        `Resultado: aunque dos usuarios compartan contraseña, sus registros en /etc/shadow lucen completamente distintos.`;
+
+      // Construir cadena corta de Lamport (N=5)
+      const chain = [saltedHash];
+      for (let i = 1; i <= 5; i++) {
+        chain.push(await computeSha256Hex(chain[i - 1]));
+      }
+      const idxServer = 5 - lamportStep;
+      const storedOnServer = chain[idxServer];
+      const clientSends = idxServer > 0 ? chain[idxServer - 1] : chain[0];
+      const verified = idxServer > 0 ? (await computeSha256Hex(clientSends)) === storedOnServer : false;
+
+      lamportOut.textContent =
+        `Cadena Hash de Lamport (OTP · Sesión ${lamportStep + 1} de 5):\n` +
+        `• Servidor almacena H^${idxServer}: ${storedOnServer.slice(0, 28)}…\n` +
+        (idxServer > 0
+          ? `• Cliente envía H^${idxServer - 1}:     ${clientSends.slice(0, 28)}…\n• Verificación H(cliente) == servidor: ${verified ? 'VÁLIDA → servidor reemplaza su valor por H^' + (idxServer - 1) : 'INVÁLIDA'}`
+          : `• Cadena agotada: el usuario debe generar una nueva semilla s.`);
+    }
+
+    function stepLamportOtp() {
+      lamportStep = (lamportStep + 1) % 5;
+      updateAuthDemo();
+    }
+
+    function setStackMode(mode) {
+      const btns = document.querySelectorAll('[data-stack-mode]');
+      btns.forEach(function (b) {
+        if (b.getAttribute('data-stack-mode') === mode) b.classList.add('is-active');
+        else b.classList.remove('is-active');
+      });
+
+      const grid = document.getElementById('stack-visual');
+      const exp = document.getElementById('stack-explanation');
+      if (!grid || !exp) return;
+
+      if (mode === 'normal') {
+        grid.innerHTML = `
+          <div class="stack-slot is-safe"><strong>buffer[0..15]</strong><br><code>"archivo\0........"</code></div>
+          <div class="stack-slot"><strong>Variables locales</strong><br><code>estado = 0</code></div>
+          <div class="stack-slot"><strong>EBP guardado</strong><br><code>0xbffff7a0</code></div>
+          <div class="stack-slot is-safe"><strong>Dirección retorno</strong><br><code>0x0804842c (main)</code></div>
+        `;
+        exp.className = 'verdict-banner verdict-allow';
+        exp.innerHTML = `<strong>Flujo legítimo:</strong> los datos caben dentro de los 16 bytes reservados para el búfer. Al terminar la función, el procesador retorna limpiamente a <code>0x0804842c</code>.`;
+      } else if (mode === 'overflow') {
+        grid.innerHTML = `
+          <div class="stack-slot is-corrupted"><strong>buffer[0..15]</strong><br><code>"\x90\x90\xeb\x1f..." (Shellcode)</code></div>
+          <div class="stack-slot is-corrupted"><strong>Variables locales</strong><br><code>SOOBRESCRITO</code></div>
+          <div class="stack-slot is-corrupted"><strong>EBP guardado</strong><br><code>0x41414141</code></div>
+          <div class="stack-slot is-corrupted"><strong>Dirección retorno</strong><br><code>0xbffff760 → ¡Al búfer!</code></div>
+        `;
+        exp.className = 'verdict-banner verdict-deny';
+        exp.innerHTML = `<strong>Explotación exitosa (sin defensa):</strong> <code>gets()</code> copia más de 16 bytes sin verificar longitud, pisando el marco de pila y reemplazando la dirección de retorno para saltar al código inyectado en el propio búfer.`;
+      } else {
+        grid.innerHTML = `
+          <div class="stack-slot is-corrupted"><strong>buffer[0..15]</strong><br><code>Intento de desborde</code></div>
+          <div class="stack-slot is-canary"><strong>Canario de pila</strong><br><code>0x8a3f00d1 → ¡Alterado!</code></div>
+          <div class="stack-slot is-safe"><strong>Pila NX / DEP</strong><br><code>No ejecutable</code></div>
+          <div class="stack-slot is-safe"><strong>Dirección retorno</strong><br><code>Protegida (Abort)</code></div>
+        `;
+        exp.className = 'verdict-banner verdict-warn';
+        exp.innerHTML = `<strong>Defensa activa (Canario + Pila NX + ASLR):</strong> antes de ejecutar <code>RET</code>, el epílogo comprueba que el valor centinela (canario) fue modificado y aborta el proceso inmediatamente; además, la pila marcada con bit NX impide ejecutar datos como instrucciones.`;
+      }
+    }
+
+    // =========================================================================
+    // SECCIÓN 6.6: ACORDEONES
+    // =========================================================================
+    function toggleAccordion(btn) {
+      const item = btn ? btn.closest('.accordion-item') : null;
+      if (!item) return;
+      const isOpen = item.classList.toggle('is-open');
+      btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    }
+
+    function toggleAllAccordions(openAll) {
+      const items = document.querySelectorAll('#sec-6-6-accordions .accordion-item');
+      items.forEach(function (item) {
+        const btn = item.querySelector('.accordion-trigger');
+        if (openAll) {
+          item.classList.add('is-open');
+          if (btn) btn.setAttribute('aria-expanded', 'true');
+        } else {
+          item.classList.remove('is-open');
+          if (btn) btn.setAttribute('aria-expanded', 'false');
+        }
+      });
+    }
+
+    // =========================================================================
+    // SECCIÓN 6.7: BANCO CRIPTOGRÁFICO EN VIVO
+    // =========================================================================
+    function xorHexEncrypt(text, key) {
+      if (!key) key = 'K';
+      const bytes = [];
+      for (let i = 0; i < text.length; i++) {
+        const code = text.charCodeAt(i) ^ key.charCodeAt(i % key.length);
+        bytes.push((code & 0xff).toString(16).padStart(2, '0'));
+      }
+      return bytes.join('');
+    }
+
+    async function runCryptoLab() {
+      const msgEl = document.getElementById('crypto-msg');
+      const keyEl = document.getElementById('crypto-key');
+      const outEl = document.getElementById('crypto-output');
+      if (!msgEl || !keyEl || !outEl) return;
+
+      const msg = msgEl.value || '';
+      const key = keyEl.value || 'K';
+      const hashOriginal = await computeSha256Hex(msg);
+      const cipherHex = xorHexEncrypt(msg, key);
+      const signature = await computeSha256Hex('PRIV_KEY_EMISOR:' + hashOriginal);
+
+      const receivedMsg = cryptoTampered ? msg + ' [ALTERADO]' : msg;
+      const hashReceived = await computeSha256Hex(receivedMsg);
+      const sigValid = hashOriginal === hashReceived;
+
+      outEl.textContent =
+        `1. Texto plano (P):          "${msg}" (${msg.length} caracteres)\n` +
+        `2. Cifrado simétrico (hex):  ${cipherHex.slice(0, 64)}${cipherHex.length > 64 ? '…' : ''}\n` +
+        `3. Resumen SHA-256 H(P):     ${hashOriginal}\n` +
+        `4. Firma Digital D_priv(H):  ${signature.slice(0, 48)}… (verificada con Certificado de CA)\n` +
+        `5. Verificación en destino:  ${sigValid ? 'ÍNTEGRA Y AUTÉNTICA (H(P_recibido) == E_pub(Firma))' : 'ALERTA DE ALTERACIÓN — El hash recibido no coincide con la firma digital!'}`;
+    }
+
+    function tamperCryptoSignature() {
+      cryptoTampered = !cryptoTampered;
+      runCryptoLab();
+    }
+
+    // =========================================================================
+    // PROGRESO DE ESTUDIO & PERSISTENCIA CON notebookAppApi
+    // =========================================================================
+    async function saveAppState() {
+      if (window.notebookAppApi && typeof window.notebookAppApi.setAppState === 'function') {
+        try {
+          await window.notebookAppApi.setAppState({
+            completedSections: appState.completedSections,
+            team: appState.team.map(function (m) {
+              return {
+                name: m.name,
+                control: m.control,
+                role: m.role,
+                accent: m.accent
+              };
+            })
+          });
+        } catch (e) {
+          // Silencioso en caso de estado transitorio
+        }
+      }
+    }
+
+    function renderProgress() {
+      const total = 7;
+      const count = appState.completedSections.length;
+      const labelEl = document.getElementById('progress-label');
+      const fillEl = document.getElementById('progress-fill');
+      if (labelEl) {
+        labelEl.textContent = `Progreso de estudio: ${count} de ${total} temas completados`;
+      }
+      if (fillEl) {
+        fillEl.style.width = `${Math.round((count / total) * 100)}%`;
+      }
+
+      document.querySelectorAll('[data-complete-btn]').forEach(function (btn) {
+        const sec = btn.getAttribute('data-complete-btn');
+        const done = appState.completedSections.indexOf(sec) !== -1;
+        const span = btn.querySelector('span');
+        if (done) {
+          btn.classList.add('is-completed');
+          if (span) span.textContent = 'Estudiado';
+        } else {
+          btn.classList.remove('is-completed');
+          if (span) span.textContent = 'Marcar como estudiado';
+        }
+      });
+
+      document.querySelectorAll('[data-nav-sec]').forEach(function (link) {
+        const sec = link.getAttribute('data-nav-sec');
+        if (appState.completedSections.indexOf(sec) !== -1) link.classList.add('is-done');
+        else link.classList.remove('is-done');
+      });
+    }
+
+    function toggleSectionComplete(secId) {
+      const idx = appState.completedSections.indexOf(secId);
+      if (idx === -1) appState.completedSections.push(secId);
+      else appState.completedSections.splice(idx, 1);
+      renderProgress();
+      saveAppState();
+    }
+
+    // =========================================================================
+    // CRÉDITOS: TARJETAS DE 4 INTEGRANTES
+    // =========================================================================
+    function getInitials(name, index) {
+      const clean = (name || '').trim();
+      if (!clean) return `E${index + 1}`;
+      const parts = clean.split(/\s+/);
+      if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    }
+
+    function getAccentClass(accent) {
+      if (accent === 'gold') return 'accent-gold';
+      if (accent === 'pine') return 'accent-pine';
+      if (accent === 'ink') return 'accent-ink';
+      return '';
+    }
+
+    function renderTeamCards() {
+      const grid = document.getElementById('team-grid');
+      if (!grid) return;
+
+      grid.innerHTML = appState.team.map(function (member, idx) {
+        const photoUrl = sessionPhotos[idx];
+        const initials = getInitials(member.name, idx);
+        const accentCls = getAccentClass(member.accent);
+        const avatarInner = photoUrl
+          ? `<img src="${photoUrl}" alt="Fotografía de perfil del integrante ${idx + 1}">`
+          : `<span>${initials}</span>`;
+
+        return `
+          <article class="member-card">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="index-num">INTEGRANTE 0${idx + 1}</span>
+              <span class="dossier-meta">${member.role}</span>
+            </div>
+
+            <div class="avatar-frame">
+              <div class="avatar-circle ${accentCls}" id="avatar-box-${idx}">
+                ${avatarInner}
+              </div>
+              <div style="display:grid; gap:var(--space-xs);">
+                <span class="dossier-meta">Fotografía / Insignia</span>
+                <div class="photo-actions">
+                  <label class="btn btn-secondary btn-compact" for="photo-input-${idx}">
+                    Cargar foto
+                  </label>
+                  <input id="photo-input-${idx}" type="file" accept="image/*" class="file-input-hidden" onchange="handleMemberPhoto(${idx}, this)">
+                  <button type="button" class="btn btn-secondary btn-compact" onclick="cycleMemberAccent(${idx})">Color</button>
+                  ${photoUrl ? `<button type="button" class="btn btn-secondary btn-compact" onclick="clearMemberPhoto(${idx})">Quitar</button>` : ''}
+                </div>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label for="member-name-${idx}">Nombre del alumno</label>
+              <input id="member-name-${idx}" type="text" class="field-input" value="${escapeHtmlAttr(member.name)}" placeholder="Ej. Nombre Apellido" oninput="updateMemberField(${idx}, 'name', this.value)">
+            </div>
+
+            <div class="field-group">
+              <label for="member-ctrl-${idx}">Número de control</label>
+              <input id="member-ctrl-${idx}" type="text" class="field-input" value="${escapeHtmlAttr(member.control)}" placeholder="Ej. 22XXXXXX" oninput="updateMemberField(${idx}, 'control', this.value)">
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function escapeHtmlAttr(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+
+    function updateMemberField(idx, field, val) {
+      if (!appState.team[idx]) return;
+      appState.team[idx][field] = val;
+      if (field === 'name' && !sessionPhotos[idx]) {
+        const box = document.getElementById(`avatar-box-${idx}`);
+        if (box) box.innerHTML = `<span>${getInitials(val, idx)}</span>`;
+      }
+      saveAppState();
+    }
+
+    function cycleMemberAccent(idx) {
+      const order = ['secondary', 'gold', 'pine', 'ink'];
+      const cur = appState.team[idx].accent || 'secondary';
+      const next = order[(order.indexOf(cur) + 1) % order.length];
+      appState.team[idx].accent = next;
+      const box = document.getElementById(`avatar-box-${idx}`);
+      if (box) {
+        box.className = 'avatar-circle ' + getAccentClass(next);
+      }
+      saveAppState();
+    }
+
+    function handleMemberPhoto(idx, inputEl) {
+      if (!inputEl || !inputEl.files || !inputEl.files[0]) return;
+      const file = inputEl.files[0];
+      if (sessionPhotos[idx]) {
+        URL.revokeObjectURL(sessionPhotos[idx]);
+      }
+      sessionPhotos[idx] = URL.createObjectURL(file);
+      renderTeamCards();
+      const status = document.getElementById('credits-status-msg');
+      if (status) {
+        status.textContent = `Fotografía cargada en vista previa para el Integrante 0${idx + 1}.`;
+      }
+    }
+
+    function clearMemberPhoto(idx) {
+      if (sessionPhotos[idx]) {
+        URL.revokeObjectURL(sessionPhotos[idx]);
+        sessionPhotos[idx] = null;
+      }
+      renderTeamCards();
+    }
+
+    function resetTeamData(btn) {
+      if (btn && btn.dataset.armed !== 'true') {
+        btn.dataset.armed = 'true';
+        btn.textContent = 'Confirmar restablecer';
+        return;
+      }
+      if (btn) {
+        btn.dataset.armed = 'false';
+        btn.textContent = 'Restablecer equipo';
+      }
+      sessionPhotos.forEach(function (url, i) {
+        if (url) URL.revokeObjectURL(url);
+        sessionPhotos[i] = null;
+      });
+      appState.team = JSON.parse(JSON.stringify(DEFAULT_TEAM));
+      renderTeamCards();
+      saveAppState();
+      const status = document.getElementById('credits-status-msg');
+      if (status) status.textContent = 'Datos del equipo restablecidos.';
+    }
+
+    function exportCreditsSummary() {
+      const lines = [
+        'UNIDAD 6: PROTECCIÓN Y SEGURIDAD — SISTEMAS OPERATIVOS',
+        'Carrera: Ingeniería en Sistemas Computacionales',
+        'Materia: Sistemas Operativos',
+        'Docente: Myrna Villegas Gaytán',
+        '',
+        'EQUIPO DE TRABAJO:',
+        ...appState.team.map(function (m, i) {
+          const n = m.name.trim() || '(Sin nombre registrado)';
+          const c = m.control.trim() || '(Sin número de control)';
+          return `${i + 1}. ${n} — No. Control: ${c} (${m.role})`;
+        }),
+        '',
+        `Progreso de estudio registrado: ${appState.completedSections.length}/7 secciones (${appState.completedSections.join(', ') || 'ninguna'})`
+      ];
+      const text = lines.join('\n');
+      if (window.notebookAppApi && typeof window.notebookAppApi.triggerFileDownload === 'function') {
+        window.notebookAppApi.triggerFileDownload({
+          content: text,
+          contentType: 'text/plain',
+          encoding: 'UTF-8',
+          filename: 'creditos_unidad6_sistemas_operativos.txt'
+        });
+      }
+    }
+
+    // =========================================================================
+    // INICIALIZACIÓN DE LA APLICACIÓN
+    // =========================================================================
+    async function initApp() {
+      if (window.notebookAppApi && typeof window.notebookAppApi.getAppState === 'function') {
+        try {
+          const saved = await window.notebookAppApi.getAppState();
+          if (saved && typeof saved === 'object') {
+            if (Array.isArray(saved.completedSections)) {
+              appState.completedSections = saved.completedSections;
+            }
+            if (Array.isArray(saved.team) && saved.team.length === 4) {
+              appState.team = saved.team.map(function (item, idx) {
+                return {
+                  name: typeof item.name === 'string' ? item.name : '',
+                  control: typeof item.control === 'string' ? item.control : '',
+                  role: typeof item.role === 'string' ? item.role : DEFAULT_TEAM[idx].role,
+                  accent: typeof item.accent === 'string' ? item.accent : DEFAULT_TEAM[idx].accent
+                };
+              });
+            }
+          }
+        } catch (e) {
+          // Uso de estado predeterminado si falla lectura
+        }
+      }
+
+      selectPrinciple(0);
+      selectTcsec('C2');
+      evaluateMacFlow();
+      renderMatrixTable();
+      renderMatrixViews();
+      selectRing(0);
+      setStackMode('normal');
+      updateAuthDemo();
+      runCryptoLab();
+      renderProgress();
+      renderTeamCards();
+
+      if (window.lucide && typeof window.lucide.createIcons === 'function') {
+        window.lucide.createIcons();
+      }
+
+      if (window.notebookAppApi && typeof window.notebookAppApi.notifyAppReady === 'function') {
+        window.notebookAppApi.notifyAppReady();
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', initApp);
+  </script>
+</body>
+</html>
